@@ -21,9 +21,10 @@ export interface Integrations {
   delhivery?: { apiToken: string };
   whatsapp?: { phoneNumberId: string; accessToken: string };
   email?: { resendApiKey: string; from: string };
+  meta?: { adAccountId: string; accessToken: string; pageId: string; pixelId?: string; accountName?: string; currency?: string };
 }
 export type Provider = keyof Integrations;
-export const PROVIDERS: Provider[] = ["shiprocket", "delhivery", "whatsapp", "email"];
+export const PROVIDERS: Provider[] = ["shiprocket", "delhivery", "whatsapp", "email", "meta"];
 
 // ---------- shipments ----------
 
@@ -99,6 +100,10 @@ export function publicIntegrations(i: Integrations) {
     delhivery: { connected: Boolean(i.delhivery), hint: mask(i.delhivery?.apiToken) },
     whatsapp: { connected: Boolean(i.whatsapp), hint: i.whatsapp ? `ID ${mask(i.whatsapp.phoneNumberId)}` : undefined },
     email: { connected: Boolean(i.email), hint: i.email?.from },
+    meta: {
+      connected: Boolean(i.meta),
+      hint: i.meta ? `${i.meta.accountName ?? "ad account"} ${mask(i.meta.adAccountId)}${i.meta.pixelId ? " + pixel" : ""}` : undefined,
+    },
   };
 }
 export type PublicIntegrations = ReturnType<typeof publicIntegrations>;

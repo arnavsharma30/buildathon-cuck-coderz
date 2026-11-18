@@ -1,4 +1,5 @@
 import * as z from "zod/v4";
+import { actId, verifyAdAccount } from "@/lib/meta";
 import { defineTool, type McpCtx, type ToolDef } from "../types";
 import type { SharedWorkspace } from "@/lib/merge";
 import type { Order, Product, SiteContent, Website } from "@/lib/types";
@@ -484,11 +485,11 @@ export const opsTools: ToolDef[] = [
   // 7. Integrations
   defineTool({
     name: "connect_integration",
-    title: "Connect courier or messaging",
+    title: "Connect courier, messaging or Meta ads",
     description:
-      "Save the team's credentials on the DropOS server: shiprocket {email, password} (verified by logging in), delhivery {apiToken}, whatsapp {phoneNumberId, accessToken} (Meta WhatsApp Cloud API), email {resendApiKey, from}. Secrets are never returned. Without them, the demo courier works and customer messages are queued with one-click send links.",
+      "Save the team's credentials on the DropOS server: shiprocket {email, password} (verified by logging in), delhivery {apiToken}, whatsapp {phoneNumberId, accessToken} (Meta WhatsApp Cloud API), email {resendApiKey, from}, meta {adAccountId, accessToken (system-user token with ads_management), pageId, pixelId?} (Meta Marketing API, verified against the ad account). Secrets are never returned. Without them, the demo courier works and customer messages are queued with one-click send links.",
     schema: z.object({
-      provider: z.enum(["shiprocket", "delhivery", "whatsapp", "email"]),
+      provider: z.enum(["shiprocket", "delhivery", "whatsapp", "email", "meta"]),
       credentials: z.record(z.string(), z.string()),
     }),
     async run(ctx, { provider, credentials: c }) {
@@ -498,6 +499,7 @@ export const opsTools: ToolDef[] = [
         delhivery: ["apiToken"],
         whatsapp: ["phoneNumberId", "accessToken"],
         email: ["resendApiKey", "from"],
+        meta: ["adAccountId", "accessToken", "pageId"],
       };
       const missing = need[provider].filter((k) => !c[k]?.trim());
       if (missing.length) throw new Error(`${provider} needs: ${missing.join(", ")}`);
@@ -506,7 +508,18 @@ export const opsTools: ToolDef[] = [
         all.shiprocket = { email: c.email.trim(), password: c.password, token, tokenAt: Date.now() };
       } else if (provider === "delhivery") all.delhivery = { apiToken: c.apiToken.trim() };
       else if (provider === "whatsapp") all.whatsapp = { phoneNumberId: c.phoneNumberId.trim(), accessToken: c.accessToken.trim() };
-      else all.email = { resendApiKey: c.resendApiKey.trim(), from: c.from.trim() };
+      else if (provider === "meta") {
+        // Verify the ad account before saving (Meta's own error comes back if the token or id is wrong).
+        const acct = await verifyAdAccount({ adAccountId: c.adAccountId, accessToken: c.accessToken.trim() });
+        all.meta = {
+          adAccountId: actId(c.adAccountId),
+          accessToken: c.accessToken.trim(),
+          pageId: c.pageId.trim(),
+          ...(c.pixelId?.trim() ? { pixelId: c.pixelId.trim() } : {}),
+          accountName: acct.name,
+          currency: acct.currency,
+        };
+      } else all.email = { resendApiKey: c.resendApiKey.trim(), from: c.from.trim() };
       await saveIntegrations(all, ctx.teamId);
       await ctx.log(`connected ${provider}`, "team");
       return { text: `${provider} connected.`, data: publicIntegrations(all) };
@@ -515,9 +528,9 @@ export const opsTools: ToolDef[] = [
 
   defineTool({
     name: "disconnect_integration",
-    title: "Disconnect courier or messaging",
+    title: "Disconnect courier, messaging or Meta ads",
     description: "Remove the team's saved credentials for a provider.",
-    schema: z.object({ provider: z.enum(["shiprocket", "delhivery", "whatsapp", "email"]) }),
+    schema: z.object({ provider: z.enum(["shiprocket", "delhivery", "whatsapp", "email", "meta"]) }),
     async run(ctx, { provider }) {
       const all = await teamIntegrations(ctx);
       delete all[provider];
@@ -530,7 +543,7 @@ export const opsTools: ToolDef[] = [
   defineTool({
     name: "list_integrations",
     title: "Connected couriers and messaging",
-    description: "Which couriers (Shiprocket, Delhivery; demo always available) and messaging channels (WhatsApp Cloud API, email) the team has connected. No secrets.",
+    description: "Which couriers (Shiprocket, Delhivery; demo always available), messaging channels (WhatsApp Cloud API, email) and Meta ad account the team has connected. No secrets.",
     readOnly: true,
     schema: z.object({}),
     async run(ctx) {
