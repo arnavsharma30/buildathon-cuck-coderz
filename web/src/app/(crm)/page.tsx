@@ -10,7 +10,7 @@ import { demoWorkspace } from "@/lib/seed";
 import { Badge, Button, Card, PageHeader, Stat, cx, inputCls } from "@/components/ui";
 
 export default function CommandCenter() {
-  const { ws, update, activeProduct, reset } = useWorkspace();
+  const { ws, update, activeProduct, reset, mode } = useWorkspace();
   const pid = activeProduct?.id;
 
   const sup = ws.suppliers.filter((s) => s.productId === pid);
@@ -111,7 +111,16 @@ export default function CommandCenter() {
             <Button variant="ghost" onClick={() => confirm("Clear the whole workspace?") && reset()}>
               Reset
             </Button>
-            <Button onClick={() => update(() => demoWorkspace(ws.teamName))}>
+            <Button
+              onClick={() => {
+                if (
+                  mode === "team" &&
+                  !confirm("Load the demo data into your TEAM workspace? This replaces your team's products, suppliers, orders and more for every teammate.")
+                )
+                  return;
+                update(() => demoWorkspace(ws.teamName));
+              }}
+            >
               <Sparkles className="h-4 w-4" /> Load demo workspace
             </Button>
           </>
