@@ -146,6 +146,7 @@ One CRM that walks a team through the whole challenge, with the **active product
 | **5 · Meta ads** | Builds an ABO testing plan from the break-even CPA, tracks ad sets, and gives each one a KILL / WAIT / KEEP / SCALE verdict with reasons, using RTO-adjusted ROAS rather than Meta's reported ROAS. |
 | **6 · Orders & RTO** | Syncs COD orders from your DropOS website or imports a Shopify order export and scores every COD order for RTO risk before it ships. It shows why each order is risky and the action an operator would take (ship, confirm + prepaid offer, call + ₹99 advance, hold), drafts the WhatsApp message, and estimates the RTO and money saved on the batch. |
 | **7 · Shipping & tracking** | Connect **Shiprocket** or **Delhivery** (or use the built-in demo courier), ship confirmed orders with an RTO warning before booking, and track every AWB in one table with a normalised status timeline. Customers get a branded public tracking page (`/t/<id>`) and automatic **WhatsApp** (Meta WhatsApp Cloud API) and **email** (Resend) updates when the order is shipped, out for delivery, delivered or a delivery attempt fails. Without messaging credentials, messages queue with one-click "Send on WhatsApp" / "Send email" links. Delivered and returned parcels update the order, which feeds the RTO engine's repeat-refuser signal. |
+| **Team accounts** | `/onboarding` sets up the team in 5 steps: team and store name, your details, teammates with phone numbers, the first product, then review. Every member logs in at `/login` with their phone number and password and works in one shared server-side workspace. Saves are **three-way merged per record**, so two teammates editing different things never overwrite each other, and changes appear in teammates' browsers within ~5 seconds. The **Team** page shows each member's contributions and a live activity feed ("Aarush moved supplier Shree Balaji to quoted"), built from what each person's save changed. Without logging in, DropOS runs in a single-browser demo mode. |
 | **Command center** | Pipeline status across all five steps and a "next best action" list. |
 
 #### The hardest part: how we solved it
@@ -166,7 +167,7 @@ cp .env.example .env.local   # optional: add ANTHROPIC_API_KEY for live Claude; 
 npm run dev                   # http://localhost:3000
 ```
 
-Open the Command center and click **Load demo workspace** to fill every screen with a realistic mid-challenge team. On *Orders & RTO*, you can also import a real Shopify **Orders → Export** CSV.
+Create a team at `/onboarding` (or log in at `/login`), or skip login and use demo mode: open the Command center and click **Load demo workspace** to fill every screen with a realistic mid-challenge team. On *Orders & RTO*, you can also import a real Shopify **Orders → Export** CSV.
 
 #### Demo / screenshots
 
