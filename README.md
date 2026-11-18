@@ -423,7 +423,37 @@ npx next start -p 3100        # landing at /, onboarding at /start, MCP at /mcp/
 - We expose the server publicly at https://hack.icedoutai.com through a Cloudflare Tunnel (`cloudflared tunnel run`, ingress → `localhost:3100`).
 - Connect from Claude: create a team at `/start`, then **Settings → Connectors → Add custom connector** → paste the member's link.
 
-## 10. Limitations and next steps
+## 10. DropOS at Masters' Union: a plan for next year's Dropship Challenge
+
+Every cohort rediscovers the same lessons the hard way: naive margins, WhatsApp chaos with suppliers, blind COD shipping and gut-feel ads. DropOS is designed to be **adopted by a whole cohort on day one**, because it asks nothing new of students. They already use Claude.
+
+**How a cohort would use it**
+1. **Kick-off day (15 minutes):** each team runs `/start` together. Team name, store, teammates' numbers, then the 5-10 product ideas. Every member adds their DropOS link to Claude before leaving the room. The wizard shows live who is connected.
+2. **Week 1, choose and source:** teams ask Claude which products survive COD returns, then source on IndiaMART with drafted Hinglish outreach and parsed quotes. Weak products are dropped *before* any ad money is spent.
+3. **Week 2, launch:** store page with COD checkout, creatives, and a paused Meta test campaign that the team reviews and switches on.
+4. **Weeks 3+, operate:** RTO checks before every dispatch, Shiprocket/Delhivery tracking with WhatsApp + email updates to customers, and kill/scale calls on ads.
+5. **Throughout:** every action is attributed, so a team (or a mentor they invite) can ask "what did each of us do this week?". Contribution becomes visible instead of argued about.
+
+**Why adoption is easy:** there's no dashboard to learn and no new app. The interface is a conversation in Claude, in English or Hinglish. Onboarding is one question per screen. The tools carry the expertise (economics, RTO rules, quote parsing), so a first-time founder gets operator-grade decisions from day one.
+
+**What the programme gains**
+- **Better outcomes:** fewer teams losing money on products that only *looked* profitable, and fewer RTO losses.
+- **A learning loop:** DropOS records every order's delivered/RTO outcome, so next year's RTO weights and default assumptions can be calibrated on this year's real cohort data.
+- **Comparable metrics across teams** (real profit per order, RTO rate, CPA vs break-even) for reviews and teaching.
+
+## 11. Roadmap
+
+- **Razorpay payments, end to end (next):**
+  - Prepaid checkout on DropOS store pages, using a Razorpay order and webhook-verified payment capture.
+  - **₹99 partial-COD advance links and "₹50 off if you pay by UPI" links**, sent by `customer_message`. These are the two actions the RTO engine already recommends.
+  - Automatic order status updates on payment, plus refunds for cancelled orders.
+
+  Prepaid orders have far lower RTO, so this is the single biggest lever on the economics model. Not built during the event.
+- **Courier webhooks** for real-time tracking updates (today tracking is pulled on demand).
+- **Database storage** for multi-cohort scale (file-backed today).
+- **RTO weight calibration** on recorded outcomes.
+
+## 12. Limitations and next steps
 
 - **Live credentials:** provider integrations need each team's own credentials, and were only tested against auth errors and in demo mode during the event (see §8). WhatsApp business-initiated messages need Meta-approved templates outside the 24-hour window.
 - **Storage:** file-backed on one VM, fine for a cohort and simple to back up. A database is the next step for scale.
@@ -431,7 +461,7 @@ npx next start -p 3100        # landing at /, onboarding at /start, MCP at /mcp/
 - **RTO weights:** heuristic; the next step is calibrating them on each cohort's actual delivered and RTO outcomes, which DropOS already records.
 - **Supplier discovery:** relies on Claude's web search plus search links, because IndiaMART renders results client-side.
 
-## 11. How we built it (during the event)
+## 13. How we built it (during the event)
 
 1. **Started as a web CRM**, with product research, suppliers, creatives, Meta ads, orders/RTO, a website builder, shipping and team logins.
 2. **Pivoted to MCP-first**, because students already live in Claude and adoption beats dashboards.
