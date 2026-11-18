@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Search, Factory, Palette, Megaphone, PackageCheck, Globe } from "lucide-react";
+import { LayoutDashboard, Search, Factory, Palette, Megaphone, PackageCheck, Globe, Truck, Users } from "lucide-react";
 import { useWorkspace } from "@/lib/store";
 import { cx } from "./ui";
 
@@ -14,6 +14,8 @@ const NAV = [
   { href: "/creatives", label: "Ad creatives", icon: Palette, step: "4" },
   { href: "/ads", label: "Meta ads", icon: Megaphone, step: "5" },
   { href: "/orders", label: "Orders & RTO", icon: PackageCheck, step: "6" },
+  { href: "/shipping", label: "Shipping & tracking", icon: Truck, step: "7" },
+  { href: "/team", label: "Team", icon: Users, step: "" },
 ];
 
 export function Sidebar() {
