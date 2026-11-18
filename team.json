@@ -1,7 +1,7 @@
 {
   "team_name": "Cuck Coderz",
-  "project_title": "DropOS: AI co-pilot for the MU Dropship Challenge",
-  "one_liner": "A CRM that takes first-time student dropshippers from product idea to IndiaMART supplier quotes, ad creatives, Meta ad decisions and RTO-safe COD orders, with AI doing the grunt work at every step.",
+  "project_title": "DropOS: MCP server for the MU Dropship Challenge",
+  "one_liner": "A remote MCP server student dropshipping teams add to their own Claude: shared team state plus tools for RTO-adjusted unit economics, Hinglish supplier quotes, live COD store pages, Meta ad kill/scale calls, RTO risk checks and courier tracking with WhatsApp/email updates.",
   "track": "area-of-expertise",
   "members": [
     {
