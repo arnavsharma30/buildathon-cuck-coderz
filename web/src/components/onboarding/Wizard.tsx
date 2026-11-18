@@ -538,6 +538,14 @@ function Success({ result, integrations, onRestart }: { result: Result; integrat
                   {copied === m.mcpUrl ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />} {copied === m.mcpUrl ? "Copied" : "Copy link"}
                 </button>
               </div>
+              <a
+                href={m.mcpUrl.replace("/mcp/", "/d/")}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-block text-xs font-medium text-zinc-500 hover:text-zinc-900"
+              >
+                Analytics dashboard →
+              </a>
             </div>
           );
         })}
