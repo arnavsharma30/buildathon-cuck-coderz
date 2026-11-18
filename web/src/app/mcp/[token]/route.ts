@@ -27,6 +27,8 @@ const fail = (id: RpcId, code: number, message: string) => ({ jsonrpc: "2.0" as 
 
 export async function POST(req: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
+  // Connection diagnostics: see whether a team's Claude reaches us (token prefix only, never the full token).
+  console.log(`[mcp] POST ${token.slice(0, 6)}… ua="${req.headers.get("user-agent") ?? ""}" ip=${req.headers.get("cf-connecting-ip") ?? "-"}`);
   let body: unknown;
   try {
     body = await req.json();
@@ -91,7 +93,8 @@ async function handle(m: RpcMessage, ctx: NonNullable<Awaited<ReturnType<typeof 
   }
 }
 
-export function GET() {
+export function GET(req: Request) {
+  console.log(`[mcp] GET ${new URL(req.url).pathname.slice(0, 12)}… ua="${req.headers.get("user-agent") ?? ""}"`);
   return new Response("DropOS MCP endpoint. Add this URL to Claude: Settings → Connectors → Add custom connector.", {
     status: 405,
     headers: { allow: "POST", "content-type": "text/plain; charset=utf-8" },

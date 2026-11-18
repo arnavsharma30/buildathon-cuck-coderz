@@ -521,8 +521,11 @@ function Success({ result, integrations, onRestart }: { result: Result; integrat
                     <Check className="h-3.5 w-3.5" /> Connected
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" /> Waiting for Claude…
+                  <span
+                    className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600"
+                    title="Turns green the moment this person's Claude connects with this link"
+                  >
+                    <span className="h-2 w-2 rounded-full border border-zinc-400" /> Not added to Claude yet
                   </span>
                 )}
               </div>
