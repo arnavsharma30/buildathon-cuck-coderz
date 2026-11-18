@@ -8,7 +8,8 @@ export const TOOLS: ToolDef[] = [...teamTools, ...growthTools, ...opsTools];
 
 export function listTools() {
   return TOOLS.map((t) => {
-    const { $schema: _s, ...inputSchema } = z.toJSONSchema(t.schema, { io: "input" }) as Record<string, unknown>;
+    const inputSchema = z.toJSONSchema(t.schema, { io: "input" }) as Record<string, unknown>;
+    delete inputSchema.$schema;
     return {
       name: t.name,
       title: t.title,
