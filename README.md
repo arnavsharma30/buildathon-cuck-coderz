@@ -120,7 +120,7 @@ See [RULES.md](RULES.md) for the full list.
 
 ### DropOS: AI co-pilot for the Masters' Union Dropship Challenge
 
-- **Team:** Cuck Coderz
+- **Team:** Cuck Coderz (Arnav Sharma, Aarush Goel, Sshaurya Aggarwal)
 - **Track:** 03 · Build in Your Area of Expertise (`area-of-expertise`)
 
 #### Problem: who faces it and why it happens

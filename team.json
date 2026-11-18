@@ -4,6 +4,17 @@
   "one_liner": "A CRM that takes first-time student dropshippers from product idea to IndiaMART supplier quotes, ad creatives, Meta ad decisions and RTO-safe COD orders, with AI doing the grunt work at every step.",
   "track": "area-of-expertise",
   "members": [
-    { "name": "Arnav Sharma", "github": "arnavsharma30" }
+    {
+      "name": "Arnav Sharma",
+      "github": "arnavsharma30"
+    },
+    {
+      "name": "Aarush Goel",
+      "github": "Aarush1530"
+    },
+    {
+      "name": "Sshaurya Aggarwal",
+      "github": "Sshaurya-code"
+    }
   ]
 }
