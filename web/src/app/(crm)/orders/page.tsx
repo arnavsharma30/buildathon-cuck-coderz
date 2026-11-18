@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
-import { ChevronDown, ChevronRight, Copy, Globe, MessageCircle, RefreshCw, Upload, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, Globe, MessageCircle, RefreshCw, Truck, Upload, X } from "lucide-react";
 import { useWorkspace, postJSON } from "@/lib/store";
 import type { Order } from "@/lib/types";
 import { assessOrder, portfolioImpact, BAND_STYLE, normalizePhone, type RtoAssessment, type RiskBand } from "@/lib/rto";
@@ -252,6 +253,14 @@ export default function OrdersPage() {
                               <Button variant="secondary" className="mt-2 px-2.5 py-1 text-xs" onClick={() => openDraft(order, risk)}>
                                 <MessageCircle className="h-3.5 w-3.5" /> WhatsApp draft
                               </Button>
+                            )}
+                            {(order.status === "confirmed" || order.status === "converted-prepaid") && (
+                              <Link
+                                href="/shipping"
+                                className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white hover:bg-zinc-700"
+                              >
+                                <Truck className="h-3.5 w-3.5" /> Ship →
+                              </Link>
                             )}
                           </td>
                           <td className="py-3">
