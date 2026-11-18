@@ -168,6 +168,9 @@ Open the Command center and click **Load demo workspace** to fill every screen w
 
 #### Demo / screenshots
 
+**Live:** https://hack.icedoutai.com (click **Load demo workspace** on the Command center)
+
+
 Demo path: **Command center** → **Product research** (naive margin 69% vs real profit per order) → **Suppliers** (paste a Hinglish reply, see the parsed quote and best pick) → **Creatives** → **Meta ads** (simulate 3 days, KILL/SCALE) → **Orders & RTO** (riskiest-first dispatch queue, WhatsApp draft).
 
 **Not built yet:** live Meta Marketing API sync, Shopify Admin API sync, and courier (Shiprocket/Delhivery) NDR webhooks. Data is entered, imported via CSV, or simulated today.
