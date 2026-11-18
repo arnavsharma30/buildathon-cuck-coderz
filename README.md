@@ -289,15 +289,15 @@ flowchart LR
   subgraph Team["Each team member"]
     C1["Claude (own account)"]
   end
-  C1 -- "MCP Streamable HTTP\nPOST /mcp/&lt;personal key&gt;" --> R["JSON-RPC route\n(initialize · tools/list · tools/call)"]
-  R --> CTX["Context\nkey → team + member"]
-  CTX --> T["43 tools\n(zod-validated)"]
-  T --> E["Engines\neconomics · RTO · quotes · ads"]
-  T --> W[("Team workspace\nper-team serialized writes\n+ attributed activity")]
-  T --> X["Connectors\nMeta · WhatsApp · Shiprocket · Delhivery · Resend"]
-  T --> P["Public pages\n/s/&lt;store&gt; COD checkout\n/t/&lt;id&gt; tracking"]
+  C1 -- "MCP Streamable HTTP<br/>POST /mcp/{personal-key}" --> R["JSON-RPC route<br/>(initialize · tools/list · tools/call)"]
+  R --> CTX["Context<br/>key → team + member"]
+  CTX --> T["43 tools<br/>(zod-validated)"]
+  T --> E["Engines<br/>economics · RTO · quotes · ads"]
+  T --> W[("Team workspace<br/>per-team serialized writes<br/>+ attributed activity")]
+  T --> X["Connectors<br/>Meta · WhatsApp · Shiprocket · Delhivery · Resend"]
+  T --> P["Public pages<br/>/s/{store} COD checkout<br/>/t/{id} tracking"]
   P -- "COD orders" --> W
-  D["/d/&lt;key&gt; analytics\n(shadcn charts)"] --> W
+  D["/d/{key} analytics<br/>(shadcn charts)"] --> W
   O["/start onboarding"] --> W
 ```
 
