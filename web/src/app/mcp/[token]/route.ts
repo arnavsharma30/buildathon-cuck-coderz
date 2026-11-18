@@ -40,6 +40,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
   if (!ctx) return Response.json(fail(null, -32001, "Unknown DropOS MCP URL. Create your team at the DropOS home page to get yours."), { status: 404 });
 
   const messages = (Array.isArray(body) ? body : [body]) as RpcMessage[];
+  for (const m of messages) {
+    const tool = m?.method === "tools/call" ? ` tool=${String(m.params?.name ?? "")}` : "";
+    const ver = m?.method === "initialize" ? ` proto=${String(m.params?.protocolVersion ?? "")}` : "";
+    console.log(`[mcp]   method=${m?.method ?? "?"}${tool}${ver} member=${ctx.memberName}`);
+  }
   const replies = [];
   for (const m of messages) {
     if (m?.id === undefined || m.id === null) continue; // notifications need no reply
