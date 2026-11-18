@@ -123,6 +123,7 @@ See [RULES.md](RULES.md) for the full list.
 - **Team:** Cuck Coderz (Arnav Sharma, Aarush Goel, Sshaurya Aggarwal)
 - **Track:** 03 · Build in Your Area of Expertise (`area-of-expertise`)
 - **Live:** https://hack.icedoutai.com (create a team, get your connector URLs)
+- **Verified in Claude:** a teammate added DropOS as a custom connector in claude.ai. Claude loaded the tools and ran `analyze_products` → `get_team_overview` → `add_products` on the team's real product list (server logs, 6:21 PM IST).
 
 #### Problem: who faces it and why it happens
 
