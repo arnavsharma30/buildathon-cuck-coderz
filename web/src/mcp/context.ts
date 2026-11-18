@@ -61,7 +61,6 @@ export async function buildContext(token: string, origin: string): Promise<McpCt
     memberId: member.id,
     memberName: member.name,
     origin,
-    dashboardUrl: `${origin}/d/${token}`,
     async read() {
       const t = await getTeam(who.teamId);
       if (!t) throw new Error("Team not found");

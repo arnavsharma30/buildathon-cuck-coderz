@@ -132,10 +132,10 @@ Claude does the thinking and writing. DropOS supplies what Claude can't do alone
 |---|---|
 | **Team** | Cuck Coderz: Arnav Sharma ([@arnavsharma30](https://github.com/arnavsharma30)), Aarush Goel ([@aarush1503](https://github.com/aarush1503)), Sshaurya Aggarwal ([@Sshaurya-code](https://github.com/Sshaurya-code)) |
 | **Track** | 03 · Build in Your Area of Expertise (`area-of-expertise`). We are Masters' Union students; the Dropship Challenge is our own programme. |
-| **Live** | https://hack.icedoutai.com: landing page, `/start` onboarding, `/dashboard` analytics |
+| **Live** | https://hack.icedoutai.com: landing page and `/start` onboarding |
 | **Verified in real Claude** | A teammate added DropOS as a custom connector in claude.ai. Claude loaded the tools and ran `analyze_products` → `get_team_overview` → `add_products` on the team's real product list; server logs show `initialize` (protocol 2025-11-25), `tools/list` and the three `tools/call`s. |
 | **Stack** | Next.js 16 (App Router) · TypeScript · zod v4 · MCP over Streamable HTTP (hand-written, stateless JSON-RPC) · shadcn/ui charts (Recharts) · Tailwind v4 · file-backed storage · Cloudflare Tunnel |
-| **Size** | 43 MCP tools · ~8,000 lines of TypeScript written during the event · 55+ commits |
+| **Size** | 42 MCP tools · ~8,000 lines of TypeScript written during the event · 55+ commits |
 
 ---
 
@@ -173,11 +173,10 @@ Almost nobody on these teams has done it before.
 
 - **MCP first, so it's easy to adopt.** No new app to learn. Students already use Claude; DropOS turns it into an operator for their store.
 - **Personal connector links.** Each member's link (`/mcp/<key>`) identifies their team *and* them, so every change lands in a shared team log with the person's name ("Aarush moved supplier Shree Balaji to quoted").
-- **No LLM key on the server.** All 43 tools are deterministic; the intelligence is the team's own Claude. That makes it cheap to run and keeps the numbers reproducible.
+- **No LLM key on the server.** All 42 tools are deterministic; the intelligence is the team's own Claude. That makes it cheap to run and keeps the numbers reproducible.
 - **Web surfaces, kept minimal:**
   - a landing page;
   - a one-question-at-a-time **onboarding wizard** that hands out connector links, shows live when each teammate's Claude connects, and suggests first messages built around the team's own products;
-  - an **analytics dashboard** (shadcn charts) with a **Suppliers & outreach** list: every supplier Claude logged, by stage, with its IndiaMART listing and one-tap **Send on WhatsApp** / **Copy message** for each drafted message;
   - the customer-facing **store pages** and **tracking pages**.
 
 ### How a team starts (2 minutes)
@@ -185,7 +184,7 @@ Almost nobody on these teams has done it before.
 1. https://hack.icedoutai.com → **Get started**.
 2. Answer one question at a time: team name, store name, teammates with their 10-digit mobile numbers, then the 5-10 products you're considering. Each product shows its **real profit per order after COD returns** live as you type.
 3. Each member copies their link into **Claude → Settings → Connectors → Add custom connector**. The wizard flips to "Connected ✓" the moment their Claude connects.
-4. Talk to Claude. The analytics dashboard is always one click away (**My dashboard**, or ask Claude for the link).
+4. Talk to Claude. That's the whole interface: no dashboard to learn.
 
 ### Example (real tool output, shortened)
 
@@ -216,15 +215,14 @@ Almost nobody on these teams has done it before.
 | **Stop RTO before it ships** | "Which COD orders shouldn't we ship?" | Scores every pending order, riskiest first, with the reasons. Recommends **ship / confirm + prepaid offer / call + ₹99 advance / hold**, drafts the customer WhatsApp, and shows the batch impact (sample batch: **27% expected RTO shipped blindly → 5% following the actions, ₹680 saved**) | `rto_check`, `customer_message` |
 | **Ship & track** | "Ship the confirmed orders with Delhivery and notify customers." | Creates shipments (Shiprocket / Delhivery AWB, or a built-in demo courier). **`track_shipments` refreshes every in-flight shipment for the team from Shiprocket / Delhivery**, normalises statuses into one timeline (booked → picked up → in transit → out for delivery → delivered / failed attempt / RTO), and **sends the customer WhatsApp + email updates with a live tracking link** (`/t/<id>`) at each milestone. Delivered and returned parcels update the order, and returns feed the RTO engine's repeat-refuser signal. | `create_shipment`, `track_shipments`, `notify_customer` |
 | **Connect accounts** | "Connect my Shiprocket." | Per-team credentials for Meta, WhatsApp Cloud API, Shiprocket, Delhivery and Resend. Shiprocket and Meta are **verified against their APIs before saving**; credentials are masked in every response. | `connect_integration`, `disconnect_integration`, `list_integrations` |
-| **Team** | "What did Aarush do today?" / "Where's my dashboard?" | Overview with prioritised next actions; activity attributed per member; personal dashboard link | `get_team_overview`, `team_activity`, `get_dashboard_link` |
+| **Team** | "What did Aarush do today?" | Overview with prioritised next actions; activity attributed per member | `get_team_overview`, `team_activity` |
 
 ---
 
-## 4. Full tool reference (43 tools)
+## 4. Full tool reference (42 tools)
 
-**Team (3)**
-- `get_team_overview`: start here. Team, members, products with real profit per order, pipeline status, prioritised next actions and the dashboard link.
-- `get_dashboard_link`: the member's personal analytics dashboard URL.
+**Team (2)**
+- `get_team_overview`: start here. Team, members, products with real profit per order, pipeline status, prioritised next actions.
 - `team_activity`: who did what, filterable by member.
 
 **Products, economics, suppliers, creatives, ads (15)**
@@ -291,7 +289,7 @@ flowchart LR
   end
   C1 -- "MCP Streamable HTTP<br/>POST /mcp/{personal-key}" --> R["JSON-RPC route<br/>(initialize · tools/list · tools/call)"]
   R --> CTX["Context<br/>key → team + member"]
-  CTX --> T["43 tools<br/>(zod-validated)"]
+  CTX --> T["42 tools<br/>(zod-validated)"]
   T --> E["Engines<br/>economics · RTO · quotes · ads"]
   T --> W[("Team workspace<br/>per-team serialized writes<br/>+ attributed activity")]
   T --> X["Connectors<br/>Meta · WhatsApp · Shiprocket · Delhivery · Resend"]
@@ -323,7 +321,7 @@ flowchart LR
 | `web/src/lib/couriers.ts` · `shipping-store.ts` · `notify.ts` | Shiprocket/Delhivery clients and status model · shipments and integrations · WhatsApp/email |
 | `web/src/lib/site.ts` · `site-store.ts` | Store themes and safe default copy · published stores and their orders |
 | `web/src/lib/team-store.ts` · `merge.ts` | Teams, members, atomic writes · diff → activity |
-| `web/src/app/page.tsx` · `start/` · `dashboard/` · `d/[token]/` | Landing · onboarding wizard · dashboard access · analytics dashboard |
+| `web/src/app/page.tsx` · `start/` | Landing · onboarding wizard |
 | `web/src/app/s/[slug]/` · `t/[id]/` · `api/sites/[slug]/orders` | Public store with COD checkout · customer tracking page · store order intake |
 
 ---
@@ -405,7 +403,7 @@ The first real connection showed Claude loading DropOS with no usable tools. We 
   - team activity attributed to the right members.
 - **Meta and outbound, live (demo mode):** sourcing playbook → save creatives → publish store → `meta_launch_campaign` (3 paused ad sets) → `meta_sync_results` → `meta_apply_decisions` (SCALE ₹500→₹600/day, KILL with reasons). Outbound drafts reached only opted-in contacts.
 - **Real Claude:** a teammate's claude.ai connector ran `initialize` → `tools/list` → `analyze_products` → `get_team_overview` → `add_products` (server logs).
-- **Browser (Playwright) on the live site:** the landing page, onboarding wizard (including the live Connected indicator), dashboard access via `/dashboard`, the analytics dashboard with real data, store pages, COD checkout and tracking pages all load without page errors.
+- **Browser (Playwright) on the live site:** the landing page, onboarding wizard (including the live Connected indicator), store pages, COD checkout and tracking pages all load without page errors.
 - **Static checks:** `tsc --noEmit` and `eslint` are clean.
 - **Not verified with live credentials** (none were available during the event): actual Meta campaign creation, insights and updates; actual WhatsApp / Resend sends; tracking a real Shiprocket / Delhivery AWB. Those code paths were exercised against the providers' real auth endpoints (bad credentials are rejected cleanly) and in clearly labelled demo mode.
 
@@ -438,6 +436,6 @@ npx next start -p 3100        # landing at /, onboarding at /start, MCP at /mcp/
 1. **Started as a web CRM**, with product research, suppliers, creatives, Meta ads, orders/RTO, a website builder, shipping and team logins.
 2. **Pivoted to MCP-first**, because students already live in Claude and adoption beats dashboards.
 3. **Kept the engines and the customer-facing pages** (store pages, tracking pages) and rebuilt everything else as tools.
-4. **Added the remaining pieces:** Meta Marketing API and outbound, interactive onboarding, a shadcn analytics dashboard, and the fixes found by connecting a real Claude.
+4. **Added the remaining pieces:** Meta Marketing API and outbound, interactive onboarding, shadcn charts on the landing page, and the fixes found by connecting a real Claude.
 
 The commit history shows each step.

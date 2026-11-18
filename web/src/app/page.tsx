@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BarChart3, Factory, Megaphone, PackageCheck, Search, Send, ShieldAlert, Store, Truck, Users } from "lucide-react";
+import { ArrowRight, Factory, Megaphone, PackageCheck, Search, Send, ShieldAlert, Store, Truck, Users } from "lucide-react";
 import { listTools } from "@/mcp/registry";
 import { ChatMock } from "@/components/landing/ChatMock";
 import { UnderTheHood } from "@/components/landing/UnderTheHood";
@@ -66,9 +66,6 @@ export default function Home() {
             <a href="#how" className="hover:text-zinc-900">How it works</a>
           </nav>
           <div className="flex items-center gap-2">
-            <Link href="/dashboard" className="rounded-lg px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900">
-              My dashboard
-            </Link>
             <Link href="/start" className="rounded-lg bg-zinc-900 px-3.5 py-2 text-sm font-medium text-white hover:bg-zinc-700">
               Get started
             </Link>
@@ -211,17 +208,6 @@ export default function Home() {
       </section>
 
       {/* Dashboard (secondary) */}
-      <section className="mx-auto -mt-12 max-w-6xl px-6 pb-16">
-        <div className="flex items-center gap-4 rounded-2xl border border-dashed border-zinc-300 bg-zinc-50/60 p-5">
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white text-zinc-700 shadow-sm">
-            <BarChart3 className="h-5 w-5" />
-          </div>
-          <p className="text-sm text-zinc-600">
-            <b className="text-zinc-900">Prefer charts?</b> Every member also gets a read-only analytics dashboard, linked from their setup screen.
-          </p>
-        </div>
-      </section>
-
       {/* How it works */}
       <section id="how" className="border-t border-zinc-100 bg-zinc-50/60">
         <div className="mx-auto max-w-6xl px-6 py-20">

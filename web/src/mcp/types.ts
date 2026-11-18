@@ -9,8 +9,6 @@ export interface McpCtx {
   memberName: string;
   /** Public base URL, e.g. https://hack.icedoutai.com, for store and tracking links. */
   origin: string;
-  /** This member's personal analytics dashboard URL. */
-  dashboardUrl: string;
   /** Fresh copy of the team record (workspace, members, activity). */
   read(): Promise<TeamRecord>;
   /**

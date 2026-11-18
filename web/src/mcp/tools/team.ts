@@ -57,7 +57,6 @@ export const teamTools: ToolDef[] = [
         `Products: ${ws.products.length} · suppliers: ${ws.suppliers.length} (${quoted} quoted, ${finalized} finalized) · store pages live: ${live.length} · creatives: ${ws.creatives.length} · ad sets: ${ws.adsets.length}`,
         `Orders: ${ws.orders.length} (${pending.length} awaiting dispatch, ${risky} high-risk) · assumptions: ${pct(ws.economics.codShare)} COD, ${pct(ws.economics.rtoCod)} COD RTO, CPA ${inr(ws.economics.cpa)}`,
         `Next: ${next.join(" | ")}`,
-        `Analytics dashboard (charts): ${ctx.dashboardUrl}`,
       ].join("\n");
 
       return {
@@ -69,23 +68,7 @@ export const teamTools: ToolDef[] = [
           storePages: live.map((w) => ({ productId: w.productId, url: `${ctx.origin}/s/${w.slug}` })),
           economicsAssumptions: ws.economics,
           nextActions: next,
-          dashboardUrl: ctx.dashboardUrl,
         },
-      };
-    },
-  }),
-
-  defineTool({
-    name: "get_dashboard_link",
-    title: "Open my analytics dashboard",
-    description:
-      "Returns the caller's personal link to the DropOS analytics dashboard (charts for orders, RTO risk, product profit, Meta ad sets, shipments and team activity). Use when the user asks for charts, analytics, a dashboard, or where to see their data.",
-    readOnly: true,
-    schema: z.object({}),
-    async run(ctx) {
-      return {
-        text: `Your DropOS analytics dashboard: ${ctx.dashboardUrl}\nIt's personal to you (same key as your Claude connector), so don't share it publicly.`,
-        data: { dashboardUrl: ctx.dashboardUrl },
       };
     },
   }),
