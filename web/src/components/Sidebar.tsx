@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Search, Factory, Palette, Megaphone, PackageCheck, Globe, Truck, Users } from "lucide-react";
+import { LayoutDashboard, Search, Factory, Palette, Megaphone, PackageCheck, Globe, Truck, Users, LogOut, CloudOff, Check, Loader2 } from "lucide-react";
 import { useWorkspace } from "@/lib/store";
 import { cx } from "./ui";
 
@@ -20,7 +20,7 @@ const NAV = [
 
 export function Sidebar() {
   const path = usePathname();
-  const { ws, activeProduct, setActiveProduct } = useWorkspace();
+  const { ws, activeProduct, setActiveProduct, mode, me, team, syncState, logout } = useWorkspace();
   return (
     <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r border-zinc-800 bg-zinc-950 text-zinc-300">
       <div className="px-5 pb-4 pt-5">
@@ -70,7 +70,65 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="border-t border-zinc-800 px-5 py-3 text-[11px] text-zinc-500">{ws.teamName}</div>
+      <div className="border-t border-zinc-800 px-4 py-3">
+        {mode === "team" && me ? (
+          <div>
+            <div className="mb-2 flex items-center justify-between text-[11px] text-zinc-500">
+              <span className="truncate">{team?.storeName || ws.teamName}</span>
+              <span className="flex shrink-0 items-center gap-1">
+                {syncState === "saving" && (
+                  <>
+                    <Loader2 className="h-3 w-3 animate-spin" /> Saving
+                  </>
+                )}
+                {syncState === "saved" && (
+                  <>
+                    <Check className="h-3 w-3 text-emerald-500" /> Synced
+                  </>
+                )}
+                {syncState === "offline" && (
+                  <>
+                    <CloudOff className="h-3 w-3 text-amber-500" /> Offline
+                  </>
+                )}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-500/15 text-xs font-semibold text-emerald-400">
+                {me.name
+                  .split(/\s+/)
+                  .map((x) => x[0])
+                  .slice(0, 2)
+                  .join("")
+                  .toUpperCase()}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-xs font-medium text-white">{me.name}</div>
+                <div className="text-[11px] text-zinc-500">{me.role}</div>
+              </div>
+              <button onClick={() => void logout()} title="Log out" className="rounded-md p-1.5 text-zinc-500 hover:bg-zinc-900 hover:text-white">
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        ) : mode === "demo" ? (
+          <div>
+            <div className="mb-2 text-[11px] text-zinc-500">
+              Demo mode · data stays in this browser
+            </div>
+            <div className="flex gap-2">
+              <Link href="/onboarding" className="flex-1 rounded-md bg-emerald-500 px-2 py-1.5 text-center text-xs font-semibold text-zinc-950 hover:bg-emerald-400">
+                Create team
+              </Link>
+              <Link href="/login" className="flex-1 rounded-md border border-zinc-700 px-2 py-1.5 text-center text-xs text-zinc-200 hover:bg-zinc-900">
+                Log in
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="h-12" />
+        )}
+      </div>
     </aside>
   );
 }
