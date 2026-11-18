@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, Factory, Megaphone, PackageCheck, Search, Send, ShieldAlert, Store, Truck, Users } from "lucide-react";
+import { ArrowRight, BarChart3, Factory, Megaphone, PackageCheck, Search, Send, ShieldAlert, Store, Truck, Users } from "lucide-react";
 import { listTools } from "@/mcp/registry";
 import { ChatMock } from "@/components/landing/ChatMock";
 import { UnderTheHood } from "@/components/landing/UnderTheHood";
+import { MarginBarChart, RtoAreaChart, ShipmentsDonut } from "@/components/landing/Charts";
 
 export const dynamic = "force-dynamic";
 
@@ -10,32 +11,32 @@ const FEATURES = [
   {
     icon: Search,
     title: "Find products that survive COD",
-    text: "Real profit per order after cash-on-delivery returns, reverse shipping and ad cost, not the naive margin that sinks most first-time stores.",
+    text: "Real profit per order after COD returns and ad cost.",
   },
   {
     icon: Factory,
     title: "Source suppliers on IndiaMART",
-    text: "Outreach messages in Hinglish, paste supplier replies as they are, and compare landed cost, dropshipping, COD and dispatch time side by side.",
+    text: "Message suppliers, paste their Hinglish replies, compare quotes.",
   },
   {
     icon: Store,
     title: "Launch your store",
-    text: "A live store page with Cash-on-Delivery checkout, written by Claude in English, Hinglish or Hindi. No fake reviews, ratings or countdowns.",
+    text: "A live store page with COD checkout. No fake reviews.",
   },
   {
     icon: Megaphone,
     title: "Meta ads on autopilot",
-    text: "Campaigns, ad sets and ads created in your own ad account through the Meta Marketing API. Results pulled back, with clear kill or scale calls.",
+    text: "Campaigns created via the Meta Marketing API, with kill/scale calls.",
   },
   {
     icon: Send,
     title: "Outbound to customers & leads",
-    text: "WhatsApp and email campaigns to your opted-in customers and leads: launches, restocks, festival offers, win-backs.",
+    text: "WhatsApp and email campaigns to opted-in contacts.",
   },
   {
     icon: ShieldAlert,
     title: "Stop RTO before it ships",
-    text: "Every COD order is risk-scored before dispatch, with the reason and the fix: confirm on WhatsApp, offer prepaid, take a ₹99 advance, or hold.",
+    text: "Every COD order risk-scored, with the fix, before dispatch.",
   },
 ];
 
@@ -83,8 +84,7 @@ export default function Home() {
               <span className="block text-emerald-600">End to end. Inside Claude.</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-zinc-600">
-              From picking products and finding suppliers to running Meta ads, stopping COD returns and tracking every parcel. You talk to Claude.
-              DropOS does the work and keeps your whole team on the same page.
+              You talk to Claude. DropOS does the work, from sourcing to delivery.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
@@ -97,7 +97,7 @@ export default function Home() {
                 See how it works
               </a>
             </div>
-            <p className="mt-4 text-xs text-zinc-500">Works with your own Claude account. No dashboards to learn.</p>
+            <p className="mt-4 text-xs text-zinc-500">Works with your own Claude account.</p>
           </div>
           <ChatMock />
         </div>
@@ -115,12 +115,25 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Why teams lose money */}
+      <section className="mx-auto max-w-6xl px-6 pt-20">
+        <div className="text-xs font-semibold uppercase tracking-wider text-emerald-600">Why teams lose money</div>
+        <h2 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900">Margins lie. COD returns don&apos;t.</h2>
+        <div className="mt-8 grid gap-4 lg:grid-cols-2">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+            <MarginBarChart />
+          </div>
+          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+            <RtoAreaChart />
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
       <section id="features" className="mx-auto max-w-6xl px-6 py-20">
         <div className="max-w-2xl">
           <div className="text-xs font-semibold uppercase tracking-wider text-emerald-600">The whole journey</div>
           <h2 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900">From first product idea to delivered parcel.</h2>
-          <p className="mt-3 text-zinc-600">One system for every stage of the challenge, so nothing falls between WhatsApp groups and spreadsheets.</p>
         </div>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -135,7 +148,7 @@ export default function Home() {
                   <span className="text-xs font-semibold text-zinc-400">0{i + 1}</span>
                 </div>
                 <h3 className="mt-4 font-semibold text-zinc-900">{f.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-600">{f.text}</p>
+                <p className="mt-1.5 text-sm text-zinc-600">{f.text}</p>
               </div>
             );
           })}
@@ -152,15 +165,12 @@ export default function Home() {
             </div>
             <h3 className="mt-4 text-2xl font-semibold">Ship &amp; track every parcel</h3>
             <p className="mt-3 text-zinc-300">
-              DropOS refreshes every in-flight shipment from <b className="text-white">Shiprocket</b> and <b className="text-white">Delhivery</b>.
-              Customers get <b className="text-white">WhatsApp + email updates</b> with a live tracking link at every milestone: shipped, out for
-              delivery, delivered.
+              Refreshes every in-flight shipment from <b className="text-white">Shiprocket</b> and <b className="text-white">Delhivery</b>. Customers get{" "}
+              <b className="text-white">WhatsApp + email</b> updates with a live tracking link at every milestone.
             </p>
-            <ul className="mt-5 space-y-2 text-sm text-zinc-300">
-              <li>✓ One branded tracking page per order, no courier logins for customers</li>
-              <li>✓ Failed delivery attempts flagged the moment they happen</li>
-              <li>✓ Returned parcels feed the RTO check, so repeat refusers get caught next time</li>
-            </ul>
+            <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+              <ShipmentsDonut />
+            </div>
           </div>
           <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
             <div className="flex items-center justify-between text-xs text-zinc-400">
@@ -190,11 +200,20 @@ export default function Home() {
           </div>
           <div>
             <h3 className="font-semibold text-zinc-900">One shared team brain</h3>
-            <p className="mt-1 text-sm text-zinc-600">
-              Everyone on the team connects their own Claude to the same DropOS workspace. Products, suppliers, orders and shipments stay in sync, and
-              you can ask &quot;what did Aarush do today?&quot; any time.
-            </p>
+            <p className="mt-1 text-sm text-zinc-600">Everyone&apos;s Claude works on the same data. Ask &quot;what did Aarush do today?&quot;</p>
           </div>
+        </div>
+      </section>
+
+      {/* Dashboard (secondary) */}
+      <section className="mx-auto -mt-12 max-w-6xl px-6 pb-16">
+        <div className="flex items-center gap-4 rounded-2xl border border-dashed border-zinc-300 bg-zinc-50/60 p-5">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white text-zinc-700 shadow-sm">
+            <BarChart3 className="h-5 w-5" />
+          </div>
+          <p className="text-sm text-zinc-600">
+            <b className="text-zinc-900">Prefer charts?</b> Every member also gets a read-only analytics dashboard, linked from their setup screen.
+          </p>
         </div>
       </section>
 
@@ -205,9 +224,9 @@ export default function Home() {
           <h2 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900">Set up in two minutes. Then just talk.</h2>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {[
-              { n: "1", t: "Create your team", d: "Tell us your team, store and the 5-10 products you're considering. Everyone gets their own private link." },
-              { n: "2", t: "Add DropOS to Claude", d: "In Claude: Settings → Connectors → Add custom connector. Name it DropOS and paste your link." },
-              { n: "3", t: "Just talk", d: "“Which products make money?” “Log this supplier reply.” “Launch ads.” “Ship today's safe orders.”" },
+              { n: "1", t: "Create your team", d: "Team, store and 5-10 products. Everyone gets a private link." },
+              { n: "2", t: "Add DropOS to Claude", d: "Settings → Connectors → Add custom connector → paste link." },
+              { n: "3", t: "Just talk", d: "“Which products make money?” “Ship today's safe orders.”" },
             ].map((s) => (
               <div key={s.n} className="rounded-2xl border border-zinc-200 bg-white p-6">
                 <div className="grid h-8 w-8 place-items-center rounded-full bg-zinc-900 text-sm font-semibold text-white">{s.n}</div>
@@ -235,7 +254,7 @@ export default function Home() {
       <footer className="border-t border-zinc-100">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-xs text-zinc-400">
           <span>DropOS · built at the Masters&apos; Union Buildathon by Team Cuck Coderz</span>
-          <span>Your data stays on the DropOS server and is shared only with your team.</span>
+          <span>Your data stays on DropOS, shared only with your team.</span>
         </div>
       </footer>
     </div>
