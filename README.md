@@ -153,6 +153,8 @@ They already use Claude every day, but a general chatbot can't do this job alone
   - Creating shipments with Shiprocket, Delhivery or a demo courier, and tracking them.
   - Sending customers WhatsApp (Meta Cloud API) and email (Resend) updates with a public tracking page at `/t/<id>`.
 
+For people who want charts, every member also gets a read-only **analytics dashboard** at `/d/<personal key>`, built with shadcn/Recharts. It covers orders per day (COD vs prepaid), RTO risk mix, looks-profitable vs actually-profitable per product, Meta ad sets vs break-even CPA, shipments by stage and who did what. The dashboard is secondary: everything is *done* by talking to Claude.
+
 All tools are deterministic and run on our VM, so **the server needs no LLM API key**. The intelligence is the team's own Claude.
 
 #### The hardest part: how we solved it
