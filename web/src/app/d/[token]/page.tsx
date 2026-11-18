@@ -9,6 +9,7 @@ import { adMetrics, decide } from "@/lib/ads";
 import type { ShipmentStatus } from "@/lib/couriers";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdsetChart, EmptyChart, OrdersAreaChart, ProductEconomicsChart, RiskDonut, ShipmentsChart, TeamChart } from "@/components/dashboard/Charts";
+import { RememberKey } from "@/components/dashboard/RememberKey";
 
 export const dynamic = "force-dynamic";
 
@@ -144,6 +145,7 @@ export default async function Dashboard({ params }: { params: Promise<{ token: s
 
   return (
     <main className="min-h-screen bg-zinc-50">
+      <RememberKey token={token} />
       <div className="mx-auto max-w-6xl px-5 py-8">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">

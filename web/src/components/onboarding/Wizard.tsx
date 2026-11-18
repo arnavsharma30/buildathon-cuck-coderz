@@ -93,6 +93,7 @@ export function Wizard() {
   }, []);
   useEffect(() => {
     if (loaded) sessionStorage.setItem(KEY, JSON.stringify({ s, result }));
+    if (result?.statusKey) localStorage.setItem("dropos:key", result.statusKey);
   }, [s, result, loaded]);
 
   const set = (patch: Partial<State>) => setS((x) => ({ ...x, ...patch }));

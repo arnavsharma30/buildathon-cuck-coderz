@@ -65,9 +65,14 @@ export default function Home() {
             <a href="#tracking" className="hover:text-zinc-900">Shipping & tracking</a>
             <a href="#how" className="hover:text-zinc-900">How it works</a>
           </nav>
-          <Link href="/start" className="rounded-lg bg-zinc-900 px-3.5 py-2 text-sm font-medium text-white hover:bg-zinc-700">
-            Get started
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/dashboard" className="rounded-lg px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900">
+              My dashboard
+            </Link>
+            <Link href="/start" className="rounded-lg bg-zinc-900 px-3.5 py-2 text-sm font-medium text-white hover:bg-zinc-700">
+              Get started
+            </Link>
+          </div>
         </div>
       </header>
 
