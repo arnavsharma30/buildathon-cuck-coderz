@@ -72,7 +72,7 @@ export function unitEconomics(u: UnitInput, s: EconomicsSettings): UnitResult {
     naiveMarginPct: p > 0 ? naiveMargin / p : 0,
     marginPct: revenue > 0 ? profitPerOrder / revenue : 0,
     maxRtoCod: solveMaxRto(u, s),
-    roasBreakEven: profitBeforeAds > 0 ? round((revenue / profitBeforeAds) * 100) / 100 : Infinity,
+    roasBreakEven: profitBeforeAds > 0 ? Math.round((revenue / profitBeforeAds) * 100) / 100 : Infinity,
   };
 }
 

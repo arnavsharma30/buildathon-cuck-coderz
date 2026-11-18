@@ -6,7 +6,7 @@ import { demoOrders } from "./orders-demo";
 /** A mid-challenge workspace (week 2) so every screen has something to show in a demo. */
 export function demoWorkspace(teamName: string): Workspace {
   const now = Date.now();
-  const ideas = demoProducts("", "", 3);
+  const ideas = demoProducts("posture", "", 3);
   const products = ideas.map((p, i) => ({
     ...p,
     id: `prod_demo${i}`,

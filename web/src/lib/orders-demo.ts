@@ -39,7 +39,7 @@ const HISTORY: Row[] = [
 function toOrder(r: Row, i: number, prefix: string): Order {
   const [customerName, phoneRaw, address, city, state, pincode, created, amount, payment, quantity, , status] = r;
   // Fill masked digits deterministically so demo phones are well-formed.
-  const phone = phoneRaw.replace(/x/g, () => String((i * 7 + 3) % 10));
+  const phone = phoneRaw.replace(/x/g, "4");
   return {
     id: `${prefix}${1001 + i}`,
     createdAt: new Date(`${created}:00+05:30`).toISOString(),

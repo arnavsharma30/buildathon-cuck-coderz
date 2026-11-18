@@ -176,7 +176,7 @@ export function EconomicsPanel({ product, settings: s, onProductChange, onSettin
             hint="Before you lose money"
             bad={r.maxRtoCod == null || r.maxRtoCod < s.rtoCod}
           />
-          <MiniStat label="Break-even ROAS" value={Number.isFinite(r.roasBreakEven) ? `${r.roasBreakEven}x` : "∞"} hint="Meta purchase ROAS needed" />
+          <MiniStat label="Break-even ROAS" value={Number.isFinite(r.roasBreakEven) ? `${r.roasBreakEven.toFixed(2)}×` : "∞"} hint="Meta purchase ROAS needed" />
           <MiniStat label="Delivered rate" value={pct(r.deliveredRate)} hint="Orders that turn into cash" />
         </div>
 
