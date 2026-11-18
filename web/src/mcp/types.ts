@@ -18,6 +18,8 @@ export interface McpCtx {
   update<T>(fn: (ws: SharedWorkspace) => T | Promise<T>): Promise<T>;
   /** Add an explicit activity line (for actions that don't change the workspace, e.g. sending a message). */
   log(text: string, kind?: ActivityEvent["kind"]): Promise<void>;
+  /** Record that this member's Claude connected (first initialize). */
+  markConnected(): Promise<void>;
 }
 
 export interface ToolResult {

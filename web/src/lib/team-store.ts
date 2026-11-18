@@ -16,6 +16,8 @@ export interface Member {
   passwordHash: string;
   createdAt: number;
   lastActiveAt?: number;
+  /** First time this member's Claude connected to their DropOS MCP URL. */
+  mcpConnectedAt?: number;
 }
 
 export type PublicMember = Omit<Member, "passwordHash">;

@@ -51,6 +51,7 @@ async function handle(m: RpcMessage, ctx: NonNullable<Awaited<ReturnType<typeof 
   const id = m.id as RpcId;
   switch (m.method) {
     case "initialize": {
+      await ctx.markConnected().catch((e) => console.error("[mcp] markConnected", e));
       const asked = String(m.params?.protocolVersion ?? "");
       return ok(id, {
         protocolVersion: SUPPORTED.includes(asked) ? asked : SUPPORTED[1],

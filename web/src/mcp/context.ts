@@ -78,6 +78,17 @@ export async function buildContext(token: string, origin: string): Promise<McpCt
       });
       return result;
     },
+    async markConnected() {
+      await mutateTeam(who.teamId, (t) => {
+        const m = t.members.find((x) => x.id === member.id);
+        if (!m) return;
+        if (!m.mcpConnectedAt) {
+          m.mcpConnectedAt = Date.now();
+          t.activity = [{ id: eventId(), at: Date.now(), memberId: member.id, memberName: member.name, kind: "team", text: "connected Claude to DropOS" }, ...t.activity];
+        }
+        m.lastActiveAt = Date.now();
+      });
+    },
     async log(text: string, kind: ActivityEvent["kind"] = "team") {
       await mutateTeam(who.teamId, (t) => {
         t.activity = [{ id: eventId(), at: Date.now(), memberId: member.id, memberName: member.name, kind, text }, ...t.activity];

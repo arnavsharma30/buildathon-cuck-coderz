@@ -3,8 +3,9 @@ import type { ToolDef } from "./types";
 import { teamTools } from "./tools/team";
 import { growthTools } from "./tools/growth";
 import { opsTools } from "./tools/ops";
+import { marketingTools } from "./tools/marketing";
 
-export const TOOLS: ToolDef[] = [...teamTools, ...growthTools, ...opsTools];
+export const TOOLS: ToolDef[] = [...teamTools, ...growthTools, ...opsTools, ...marketingTools];
 
 export function listTools() {
   return TOOLS.map((t) => {
