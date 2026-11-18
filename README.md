@@ -118,62 +118,71 @@ See [RULES.md](RULES.md) for the full list.
 
 ## Your project
 
-### DropOS: AI co-pilot for the Masters' Union Dropship Challenge
+### DropOS: an MCP server that runs a student dropshipping business from inside Claude
 
 - **Team:** Cuck Coderz (Arnav Sharma, Aarush Goel, Sshaurya Aggarwal)
 - **Track:** 03 · Build in Your Area of Expertise (`area-of-expertise`)
+- **Live:** https://hack.icedoutai.com (create a team, get your connector URLs)
 
 #### Problem: who faces it and why it happens
 
-In the Masters' Union Dropship Challenge, first-year students run a real D2C dropshipping business in a few weeks: pick a product, find a supplier on IndiaMART, build a Shopify store, make creatives, run Meta ads and ship COD orders across India. Almost none of them have done it before, and the same three mistakes sink most teams:
+In the Masters' Union Dropship Challenge, first-year students run a real D2C dropshipping business in a few weeks: pick products, source from IndiaMART, build a store, run Meta ads and ship COD orders across India. Almost none of them have done it before, and the same mistakes sink most teams:
 
-1. **They judge a product by naive margin** (price − cost − shipping). In India about 70% of first-time buyers pay COD, and 20–40% of COD orders come back (RTO). Every RTO still costs forward and reverse shipping plus the ad that produced it. A product with a "69% margin" can lose money on every order placed.
-2. **Sourcing is manual and slow.** They message dozens of IndiaMART sellers, get replies like *"rate 180 + 18% gst, moq 20 pcs, dispatch 2 din me, cod nahi"*, and can't compare quotes on what actually matters for dropshipping: direct-to-customer shipping, COD, blind packing, dispatch time and landed cost.
-3. **They ship every COD order blindly** and run ads on gut feel, with no break-even CPA to say which ad sets to kill.
+1. **They judge products by naive margin** (price − cost − shipping). In India about 70% of first-time buyers pay COD, and 20–40% of COD orders come back (RTO). Every RTO still costs forward and reverse shipping plus the ad that produced it, so a "69% margin" product can lose money on every order placed.
+2. **Sourcing is manual chaos.** Dozens of IndiaMART sellers reply on WhatsApp in Hinglish (*"rate 180 + 18% gst, moq 20 pcs, dispatch 2 din me, cod nahi"*), and nobody compares quotes on what matters for dropshipping: direct-to-customer shipping, COD, blind packing, dispatch time and landed cost.
+3. **They ship every COD order blindly, run ads on gut feel, and lose track of who on the team did what.**
 
-The knowledge exists, but it lives in experienced operators' heads and spreadsheets. Nothing connects the steps, so a bad assumption at step 1 shows up as a loss at step 5.
+They already use Claude every day, but a general chatbot can't do this job alone: it guesses Indian COD economics, forgets the team's suppliers and orders between chats, can't publish a store or book a courier, and every teammate's chat is a separate silo.
 
-#### What we built: the core workflow
+#### What we built
 
-One CRM that walks a team through the whole challenge, with the **active product's RTO-adjusted unit economics feeding every step**:
+**DropOS is a remote MCP server.** A team creates itself on the setup page and each member gets a personal connector URL. They add it to their own Claude account (**Settings → Connectors → Add custom connector**) and then just talk to Claude about their store. Claude does the thinking and writing; DropOS gives it the tools it lacks:
 
-| Step | What DropOS does |
-|---|---|
-| **1 · Product research & catalogue** | Add your own products (images, MRP, variants, SKU, your own scoring) with a live naive-vs-real profit preview, or let Claude suggest products for the Indian market and scores demand, margin, RTO risk, competition and "wow". The economics panel contrasts *what beginners calculate* (naive margin) with *what you actually make per order placed* after COD share, RTO, reverse shipping, COD fees and CPA, plus break-even CPA, max tolerable COD RTO and break-even ROAS. |
-| **2 · Suppliers & quotes** | Finds IndiaMART suppliers (Claude web search restricted to `indiamart.com`), drafts Hinglish WhatsApp / email / IndiaMART outreach, parses messy Hinglish replies into structured quotes, and ranks them by landed cost and real profit per order, with flags for no dropship, no COD, no blind shipping, slow dispatch and high MOQ. A stage pipeline (found → contacted → quoted → sampling → finalized) tracks every supplier. |
-| **3 · AI website builder** | Generates a single-product Indian D2C store page (hero, benefits, how it works, specs, offer, FAQ, guarantee) in English, Hinglish or Hindi, with 4 themes, section-by-section editing and a desktop/mobile preview. **Publish** puts it live at `/s/<your-store>` with a Cash-on-Delivery order form. Those orders sync straight into the Orders & RTO queue, so every order is risk-scored before it ships. The builder never invents reviews, ratings, sales counts or fake scarcity: reviews stay empty until the team adds real ones. |
-| **4 · Ad creatives** | Generates distinct angles (problem→solution, price anchor, gift, UGC…), with hooks, primary text, headlines and Reel shot lists in English, Hinglish or Hindi, rendered as Instagram feed-ad mockups. |
-| **5 · Meta ads** | Builds an ABO testing plan from the break-even CPA, tracks ad sets, and gives each one a KILL / WAIT / KEEP / SCALE verdict with reasons, using RTO-adjusted ROAS rather than Meta's reported ROAS. |
-| **6 · Orders & RTO** | Syncs COD orders from your DropOS website or imports a Shopify order export and scores every COD order for RTO risk before it ships. It shows why each order is risky and the action an operator would take (ship, confirm + prepaid offer, call + ₹99 advance, hold), drafts the WhatsApp message, and estimates the RTO and money saved on the batch. |
-| **7 · Shipping & tracking** | Connect **Shiprocket** or **Delhivery** (or use the built-in demo courier), ship confirmed orders with an RTO warning before booking, and track every AWB in one table with a normalised status timeline. Customers get a branded public tracking page (`/t/<id>`) and automatic **WhatsApp** (Meta WhatsApp Cloud API) and **email** (Resend) updates when the order is shipped, out for delivery, delivered or a delivery attempt fails. Without messaging credentials, messages queue with one-click "Send on WhatsApp" / "Send email" links. Delivered and returned parcels update the order, which feeds the RTO engine's repeat-refuser signal. |
-| **Team accounts** | `/onboarding` sets up the team in 5 steps: team and store name, your details, teammates with phone numbers, the first product, then review. Every member logs in at `/login` with their phone number and password and works in one shared server-side workspace. Saves are **three-way merged per record**, so two teammates editing different things never overwrite each other, and changes appear in teammates' browsers within ~5 seconds. The **Team** page shows each member's contributions and a live activity feed ("Aarush moved supplier Shree Balaji to quoted"), built from what each person's save changed. Without logging in, DropOS runs in a single-browser demo mode. |
-| **Command center** | Pipeline status across all five steps and a "next best action" list. |
+- **Shared, persistent team state** on our server. Every teammate's Claude reads and writes the same products, suppliers, quotes, creatives, ad sets, orders and shipments, and every change is attributed to the person who made it (`team_activity`: "what did Aarush do today?").
+- **Computed, not guessed, India dropshipping math.** RTO-adjusted unit economics per order *placed*, break-even CPA, the max COD RTO a product survives, and break-even ROAS.
+- **Domain engines.** A Hinglish supplier-quote parser and quote ranking, KILL / WAIT / KEEP / SCALE ad decisions against break-even CPA, and an explainable per-order RTO risk score with the operator action (ship, confirm + prepaid offer, call + ₹99 advance, hold).
+- **Real-world actions.**
+  - Publishing a live store page with Cash-on-Delivery checkout at `/s/<store>`. Claude writes the copy; DropOS refuses invented reviews, ratings, sales counts or scarcity.
+  - Syncing the orders it receives, and importing Shopify order CSVs.
+  - Creating shipments with Shiprocket, Delhivery or a demo courier, and tracking them.
+  - Sending customers WhatsApp (Meta Cloud API) and email (Resend) updates with a public tracking page at `/t/<id>`.
+
+All tools are deterministic and run on our VM, so **the server needs no LLM API key**. The intelligence is the team's own Claude.
 
 #### The hardest part: how we solved it
 
-**Making the RTO reality visible and actionable, end to end.**
+1. **Getting the economics right, then making every tool use them.** `web/src/lib/economics.ts` models expected profit per order placed:
+   - **Revenue:** delivered% × price.
+   - **Costs:** product cost for delivered units plus lost RTO units, forward shipping on every order, reverse shipping on RTOs, COD remittance and gateway fees, packaging, and CPA.
+   - **Break-even RTO:** profit is linear in COD RTO, so we solve exactly for the RTO at which a product stops making money.
 
-- **Unit economics per order *placed*, not per order delivered** (`web/src/lib/economics.ts`). Expected revenue is `delivered% × price`. Costs include product for delivered orders plus lost RTO units, forward shipping on *every* order, reverse shipping on RTOs, COD remittance on delivered COD, gateway fees on prepaid, packaging, and CPA. Because profit is linear in the COD RTO rate, we solve for the exact RTO at which the product stops making money. Break-even CPA from this model drives the Meta ads verdicts and the supplier quote ranking.
-- **An explainable RTO risk engine** (`web/src/lib/rto.ts`). Each order is scored from the signals operators check by hand: payment mode, pincode zone (metro hubs vs postal regions with historically high COD refusal), invalid or fake phones, junk or vague addresses, gibberish names, late-night impulse orders, high-value and bulk COD, duplicates within 24h, and customers who refused before. Every signal shows its points, so students learn *why*. The score maps to an RTO probability and an action. A portfolio model compares "ship everything blindly" with "follow DropOS" on the pending batch. The weights are heuristic, and teams can tune them as their own delivery data comes in.
-- **Messy Hinglish supplier replies → structured quotes**: Claude structured outputs (zod schemas), backed by a deterministic regex parser so the feature still works offline.
-- **AI that never breaks the demo**: every Claude call (`web/src/lib/ai.ts`, model `claude-opus-5-5`, structured outputs) has a seeded fallback. A badge marks each result as *Live AI* or *Demo data*.
+   The same break-even CPA drives quote ranking, ad decisions and the overview's next actions.
+2. **Explainable RTO scoring** (`web/src/lib/rto.ts`). Every pending order is scored from the signals operators check by hand: payment mode, pincode zone, fake or invalid phones, vague or junk addresses, gibberish names, late-night impulse orders, high-value or bulk COD, duplicates, and customers who refused a parcel before (fed automatically by courier tracking). Each signal shows its points, so the agent can explain *why* an order is risky, and the batch impact shows the ₹ saved.
+3. **A multi-user MCP server with correct shared state.** The endpoint is stateless JSON-RPC over MCP Streamable HTTP (`web/src/app/mcp/[token]/route.ts`).
+   - **Identity:** each URL token maps to a team and member (`web/src/mcp/context.ts`).
+   - **Safe concurrent writes:** every write is a per-team serialized read-modify-write (`ctx.update`), so two teammates' Claudes acting at once never lose each other's changes.
+   - **Attribution:** activity is derived from the diff of each write.
 
 #### How to run it
 
 ```bash
 cd web
 npm install
-cp .env.example .env.local   # optional: add ANTHROPIC_API_KEY for live Claude; without it, seeded demo output is used
-npm run dev                   # http://localhost:3000
+npm run build && npx next start -p 3100   # MCP at /mcp/<token>, setup page at /
 ```
 
-Create a team at `/onboarding` (or log in at `/login`), or skip login and use demo mode: open the Command center and click **Load demo workspace** to fill every screen with a realistic mid-challenge team. On *Orders & RTO*, you can also import a real Shopify **Orders → Export** CSV.
+We expose it at https://hack.icedoutai.com through a Cloudflare Tunnel. Runtime data (teams, stores, orders, shipments, per-team integration credentials) lives in `web/data/`, which is not committed.
 
-#### Demo / screenshots
+#### Demo
 
-**Live:** https://hack.icedoutai.com (click **Load demo workspace** on the Command center)
+1. Open https://hack.icedoutai.com, create a team, and copy a member's connector URL.
+2. In Claude, go to **Settings → Connectors → Add custom connector** and paste the URL.
+3. Talk to Claude:
+   - "Here are our 6 product ideas…": it runs `add_products` and `analyze_products`. You see naive margin vs real profit per order, and which products to drop.
+   - "This supplier replied: *rate 180 + 18% gst…*": `record_quote` → `compare_quotes` → `finalize_supplier`.
+   - "Write and publish our store page in Hinglish": `publish_store_page` returns a live URL. Place a COD order on it.
+   - "Sync orders and tell me what not to ship": `sync_website_orders` / `import_orders` → `rto_check`.
+   - "Ship the safe ones and notify customers": `create_shipment` → `track_shipments`, with a customer tracking link.
+   - "What did my teammates do today?": `team_activity`.
 
-
-Demo path: **Command center** → **Product research** (add a product) (naive margin 69% vs real profit per order) → **Suppliers** (paste a Hinglish reply, see the parsed quote and best pick) → **Website builder** (generate, publish, place a COD order on the live page) → **Creatives** → **Meta ads** (simulate 3 days, KILL/SCALE) → **Orders & RTO** (sync website orders, riskiest-first dispatch queue, WhatsApp draft).
-
-**Not built yet:** live Meta Marketing API sync, Shopify Admin API sync, and courier webhooks (tracking is pulled on refresh today). Real Shiprocket/Delhivery/WhatsApp/Resend calls are implemented but were only tested against their auth errors, since we had no live credentials during the event.
+**Limits:** courier, WhatsApp and Resend calls are implemented but were only tested against their auth errors, since we had no live credentials during the event. Until a team connects them, messages are queued with one-click send links. Meta Ads numbers are logged through Claude rather than pulled from the Marketing API.
