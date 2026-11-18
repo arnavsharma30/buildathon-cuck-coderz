@@ -139,11 +139,12 @@ One CRM that walks a team through the whole challenge, with the **active product
 
 | Step | What DropOS does |
 |---|---|
-| **1 · Product research** | Claude suggests products for the Indian market and scores demand, margin, RTO risk, competition and "wow". The economics panel contrasts *what beginners calculate* (naive margin) with *what you actually make per order placed* after COD share, RTO, reverse shipping, COD fees and CPA, plus break-even CPA, max tolerable COD RTO and break-even ROAS. |
+| **1 · Product research & catalogue** | Add your own products (images, MRP, variants, SKU, your own scoring) with a live naive-vs-real profit preview, or let Claude suggest products for the Indian market and scores demand, margin, RTO risk, competition and "wow". The economics panel contrasts *what beginners calculate* (naive margin) with *what you actually make per order placed* after COD share, RTO, reverse shipping, COD fees and CPA, plus break-even CPA, max tolerable COD RTO and break-even ROAS. |
 | **2 · Suppliers & quotes** | Finds IndiaMART suppliers (Claude web search restricted to `indiamart.com`), drafts Hinglish WhatsApp / email / IndiaMART outreach, parses messy Hinglish replies into structured quotes, and ranks them by landed cost and real profit per order, with flags for no dropship, no COD, no blind shipping, slow dispatch and high MOQ. A stage pipeline (found → contacted → quoted → sampling → finalized) tracks every supplier. |
-| **3 · Ad creatives** | Generates distinct angles (problem→solution, price anchor, gift, UGC…), with hooks, primary text, headlines and Reel shot lists in English, Hinglish or Hindi, rendered as Instagram feed-ad mockups. |
-| **4 · Meta ads** | Builds an ABO testing plan from the break-even CPA, tracks ad sets, and gives each one a KILL / WAIT / KEEP / SCALE verdict with reasons, using RTO-adjusted ROAS rather than Meta's reported ROAS. |
-| **5 · Orders & RTO** | Imports a Shopify order export and scores every COD order for RTO risk before it ships. It shows why each order is risky and the action an operator would take (ship, confirm + prepaid offer, call + ₹99 advance, hold), drafts the WhatsApp message, and estimates the RTO and money saved on the batch. |
+| **3 · AI website builder** | Generates a single-product Indian D2C store page (hero, benefits, how it works, specs, offer, FAQ, guarantee) in English, Hinglish or Hindi, with 4 themes, section-by-section editing and a desktop/mobile preview. **Publish** puts it live at `/s/<your-store>` with a Cash-on-Delivery order form. Those orders sync straight into the Orders & RTO queue, so every order is risk-scored before it ships. The builder never invents reviews, ratings, sales counts or fake scarcity: reviews stay empty until the team adds real ones. |
+| **4 · Ad creatives** | Generates distinct angles (problem→solution, price anchor, gift, UGC…), with hooks, primary text, headlines and Reel shot lists in English, Hinglish or Hindi, rendered as Instagram feed-ad mockups. |
+| **5 · Meta ads** | Builds an ABO testing plan from the break-even CPA, tracks ad sets, and gives each one a KILL / WAIT / KEEP / SCALE verdict with reasons, using RTO-adjusted ROAS rather than Meta's reported ROAS. |
+| **6 · Orders & RTO** | Syncs COD orders from your DropOS website or imports a Shopify order export and scores every COD order for RTO risk before it ships. It shows why each order is risky and the action an operator would take (ship, confirm + prepaid offer, call + ₹99 advance, hold), drafts the WhatsApp message, and estimates the RTO and money saved on the batch. |
 | **Command center** | Pipeline status across all five steps and a "next best action" list. |
 
 #### The hardest part: how we solved it
@@ -171,6 +172,6 @@ Open the Command center and click **Load demo workspace** to fill every screen w
 **Live:** https://hack.icedoutai.com (click **Load demo workspace** on the Command center)
 
 
-Demo path: **Command center** → **Product research** (naive margin 69% vs real profit per order) → **Suppliers** (paste a Hinglish reply, see the parsed quote and best pick) → **Creatives** → **Meta ads** (simulate 3 days, KILL/SCALE) → **Orders & RTO** (riskiest-first dispatch queue, WhatsApp draft).
+Demo path: **Command center** → **Product research** (add a product) (naive margin 69% vs real profit per order) → **Suppliers** (paste a Hinglish reply, see the parsed quote and best pick) → **Website builder** (generate, publish, place a COD order on the live page) → **Creatives** → **Meta ads** (simulate 3 days, KILL/SCALE) → **Orders & RTO** (sync website orders, riskiest-first dispatch queue, WhatsApp draft).
 
 **Not built yet:** live Meta Marketing API sync, Shopify Admin API sync, and courier (Shiprocket/Delhivery) NDR webhooks. Data is entered, imported via CSV, or simulated today.
