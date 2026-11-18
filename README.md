@@ -145,6 +145,7 @@ One CRM that walks a team through the whole challenge, with the **active product
 | **4 · Ad creatives** | Generates distinct angles (problem→solution, price anchor, gift, UGC…), with hooks, primary text, headlines and Reel shot lists in English, Hinglish or Hindi, rendered as Instagram feed-ad mockups. |
 | **5 · Meta ads** | Builds an ABO testing plan from the break-even CPA, tracks ad sets, and gives each one a KILL / WAIT / KEEP / SCALE verdict with reasons, using RTO-adjusted ROAS rather than Meta's reported ROAS. |
 | **6 · Orders & RTO** | Syncs COD orders from your DropOS website or imports a Shopify order export and scores every COD order for RTO risk before it ships. It shows why each order is risky and the action an operator would take (ship, confirm + prepaid offer, call + ₹99 advance, hold), drafts the WhatsApp message, and estimates the RTO and money saved on the batch. |
+| **7 · Shipping & tracking** | Connect **Shiprocket** or **Delhivery** (or use the built-in demo courier), ship confirmed orders with an RTO warning before booking, and track every AWB in one table with a normalised status timeline. Customers get a branded public tracking page (`/t/<id>`) and automatic **WhatsApp** (Meta WhatsApp Cloud API) and **email** (Resend) updates when the order is shipped, out for delivery, delivered or a delivery attempt fails. Without messaging credentials, messages queue with one-click "Send on WhatsApp" / "Send email" links. Delivered and returned parcels update the order, which feeds the RTO engine's repeat-refuser signal. |
 | **Command center** | Pipeline status across all five steps and a "next best action" list. |
 
 #### The hardest part: how we solved it
@@ -174,4 +175,4 @@ Open the Command center and click **Load demo workspace** to fill every screen w
 
 Demo path: **Command center** → **Product research** (add a product) (naive margin 69% vs real profit per order) → **Suppliers** (paste a Hinglish reply, see the parsed quote and best pick) → **Website builder** (generate, publish, place a COD order on the live page) → **Creatives** → **Meta ads** (simulate 3 days, KILL/SCALE) → **Orders & RTO** (sync website orders, riskiest-first dispatch queue, WhatsApp draft).
 
-**Not built yet:** live Meta Marketing API sync, Shopify Admin API sync, and courier (Shiprocket/Delhivery) NDR webhooks. Data is entered, imported via CSV, or simulated today.
+**Not built yet:** live Meta Marketing API sync, Shopify Admin API sync, and courier webhooks (tracking is pulled on refresh today). Real Shiprocket/Delhivery/WhatsApp/Resend calls are implemented but were only tested against their auth errors, since we had no live credentials during the event.
