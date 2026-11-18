@@ -10,6 +10,8 @@ import type { ShipmentStatus } from "@/lib/couriers";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdsetChart, EmptyChart, OrdersAreaChart, ProductEconomicsChart, RiskDonut, ShipmentsChart, TeamChart } from "@/components/dashboard/Charts";
 import { RememberKey } from "@/components/dashboard/RememberKey";
+import { SupplierOutreach, type SupplierRow } from "@/components/dashboard/SupplierOutreach";
+import { normalizePhone } from "@/lib/rto";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +51,23 @@ export default async function Dashboard({ params }: { params: Promise<{ token: s
   if (!who || !t) notFound();
 
   const ws = t.workspace;
+  const stageOrder = ["contacted", "quoted", "sampling", "finalized", "found", "rejected"];
+  const supplierRows: SupplierRow[] = ws.suppliers
+    .map((s) => {
+      const phone = s.phone ? normalizePhone(s.phone) : "";
+      return {
+        id: s.id,
+        name: s.name,
+        city: s.city || undefined,
+        stage: s.stage,
+        productName: ws.products.find((p) => p.id === s.productId)?.name ?? "",
+        url: s.url && /^https?:\/\//.test(s.url) ? s.url : undefined,
+        phone: /^[6-9]\d{9}$/.test(phone) ? phone : undefined,
+        message: s.outreach?.message || undefined,
+        landed: s.quote?.landedCost,
+      };
+    })
+    .sort((a, b) => stageOrder.indexOf(a.stage) - stageOrder.indexOf(b.stage) || Number(Boolean(b.message)) - Number(Boolean(a.message)));
   const econ = ws.economics;
   const productEcon = new Map(
     ws.products.map((p) => [p.id, unitEconomics({ sellingPrice: p.sellingPrice, productCost: p.sourcingCost, shippingFwd: p.shippingCost }, econ)]),
@@ -274,6 +293,11 @@ export default async function Dashboard({ params }: { params: Promise<{ token: s
               </ul>
             </CardContent>
           </Card>
+        </section>
+
+        <section className="mt-6">
+          <h2 className="mb-1 text-base font-semibold text-zinc-900">Suppliers &amp; outreach</h2>
+          <SupplierOutreach rows={supplierRows} />
         </section>
 
         <footer className="mt-8 text-center text-xs text-zinc-400">Everything here is managed by talking to Claude.</footer>
