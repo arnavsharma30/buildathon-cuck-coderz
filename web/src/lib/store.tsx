@@ -13,6 +13,7 @@ export const EMPTY_WORKSPACE: Workspace = {
   creatives: [],
   adsets: [],
   orders: [],
+  websites: [],
   economics: DEFAULT_ECONOMICS,
 };
 

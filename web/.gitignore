@@ -48,3 +48,6 @@ package-lock.json
 .open-next/
 .wrangler/
 .dev.vars
+
+# published sites and website orders (runtime data)
+/data/

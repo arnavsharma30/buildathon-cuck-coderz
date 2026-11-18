@@ -24,6 +24,44 @@ export interface Product {
   indiamartQuery: string; // what to search on IndiaMART
   status: ProductStatus;
   createdAt: number;
+  // Catalogue details (optional; filled when a team adds/edits a product by hand)
+  description?: string;
+  images?: string[]; // image URLs
+  compareAtPrice?: number; // MRP shown struck-through
+  sku?: string;
+  variants?: string[]; // e.g. ["Black", "Beige"] or ["S", "M", "L"]
+  tags?: string[];
+}
+
+// ---- AI website builder ----
+
+export type SiteTheme = "fresh" | "bold" | "luxe" | "playful";
+
+export interface SiteContent {
+  brandName: string;
+  tagline: string;
+  announcement: string; // top bar, e.g. "Free shipping · Cash on Delivery available"
+  hero: { headline: string; subheadline: string; cta: string; badge?: string };
+  benefits: { icon: string; title: string; text: string }[]; // icon = single emoji
+  howItWorks: { title: string; text: string }[];
+  specs: { label: string; value: string }[];
+  offer: { price: number; compareAtPrice?: number; bullets: string[] };
+  faq: { q: string; a: string }[];
+  guarantee: string;
+  reviews: { name: string; city: string; text: string; rating: number }[]; // REAL reviews only: empty until the team adds them
+  footerNote: string;
+}
+
+export interface Website {
+  id: string;
+  productId: string;
+  slug: string; // published at /s/<slug>
+  theme: SiteTheme;
+  language: "English" | "Hinglish" | "Hindi";
+  content: SiteContent;
+  imageUrl?: string;
+  publishedAt?: number;
+  updatedAt: number;
 }
 
 export type SupplierStage = "found" | "contacted" | "quoted" | "sampling" | "finalized" | "rejected";
@@ -108,6 +146,7 @@ export interface Order {
   amount: number;
   payment: PaymentMode;
   quantity: number;
+  source?: "demo" | "shopify" | "website";
   status: "new" | "confirmed" | "converted-prepaid" | "cancelled" | "shipped" | "delivered" | "rto";
 }
 
@@ -131,5 +170,6 @@ export interface Workspace {
   creatives: Creative[];
   adsets: AdSetRow[];
   orders: Order[];
+  websites: Website[];
   economics: EconomicsSettings;
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Search, Factory, Palette, Megaphone, PackageCheck } from "lucide-react";
+import { LayoutDashboard, Search, Factory, Palette, Megaphone, PackageCheck, Globe } from "lucide-react";
 import { useWorkspace } from "@/lib/store";
 import { cx } from "./ui";
 
@@ -10,9 +10,10 @@ const NAV = [
   { href: "/", label: "Command center", icon: LayoutDashboard, step: "" },
   { href: "/products", label: "Product research", icon: Search, step: "1" },
   { href: "/suppliers", label: "Suppliers & quotes", icon: Factory, step: "2" },
-  { href: "/creatives", label: "Ad creatives", icon: Palette, step: "3" },
-  { href: "/ads", label: "Meta ads", icon: Megaphone, step: "4" },
-  { href: "/orders", label: "Orders & RTO", icon: PackageCheck, step: "5" },
+  { href: "/website", label: "Website builder", icon: Globe, step: "3" },
+  { href: "/creatives", label: "Ad creatives", icon: Palette, step: "4" },
+  { href: "/ads", label: "Meta ads", icon: Megaphone, step: "5" },
+  { href: "/orders", label: "Orders & RTO", icon: PackageCheck, step: "6" },
 ];
 
 export function Sidebar() {

@@ -141,5 +141,6 @@ export function demoWorkspace(teamName: string): Workspace {
       { id: "as_demo3", productId: main.id, name: "ABO 3 · Broad women 22-30 · Problem→Solution", creativeAngle: "Problem → Solution", audience: "Women 22-30, India, broad", dailyBudget: 500, spend: 1390, impressions: 12900, clicks: 205, addToCarts: 18, purchases: 5 },
     ],
     orders: demoOrders(main.id),
+    websites: [],
   };
 }
