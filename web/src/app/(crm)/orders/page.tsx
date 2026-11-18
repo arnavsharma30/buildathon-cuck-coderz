@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { ChevronDown, ChevronRight, Copy, MessageCircle, Upload, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, Globe, MessageCircle, RefreshCw, Upload, X } from "lucide-react";
 import { useWorkspace, postJSON } from "@/lib/store";
 import type { Order } from "@/lib/types";
 import { assessOrder, portfolioImpact, BAND_STYLE, normalizePhone, type RtoAssessment, type RiskBand } from "@/lib/rto";
@@ -27,6 +27,9 @@ export default function OrdersPage() {
   const [open, setOpen] = useState<string | null>(null);
   const [draft, setDraft] = useState<{ order: Order; risk: RtoAssessment; message: string; source?: "claude" | "demo"; loading: boolean } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncMsg, setSyncMsg] = useState<string>();
+  const published = ws.websites.filter((s) => s.publishedAt);
 
   const active = useMemo(() => ws.orders.filter((o) => o.status !== "delivered" && o.status !== "rto"), [ws.orders]);
   const assessed = useMemo(
@@ -65,6 +68,33 @@ export default function OrdersPage() {
     update((w) => ({ ...w, orders: [...w.orders.filter((o) => !orders.some((n) => n.id === o.id)), ...orders] }));
   }
 
+  /** Pull COD orders placed on the team's published DropOS store pages. */
+  async function syncWebsiteOrders() {
+    setSyncing(true);
+    setSyncMsg(undefined);
+    try {
+      const batches = await Promise.all(
+        published.map(async (site) => {
+          const res = await fetch(`/api/sites/${encodeURIComponent(site.slug)}/orders`);
+          if (!res.ok) return [] as Order[];
+          const body = (await res.json()) as { orders?: Order[] };
+          return (body.orders ?? []).map((o) => ({ ...o, source: "website" as const, productId: o.productId ?? site.productId }));
+        }),
+      );
+      const incoming = batches.flat();
+      update((w) => {
+        const known = new Set(w.orders.map((o) => o.id));
+        const fresh = incoming.filter((o) => !known.has(o.id));
+        return fresh.length ? { ...w, orders: [...fresh, ...w.orders] } : w;
+      });
+      setSyncMsg(incoming.length ? `${incoming.length} order(s) on your website, all synced into the dispatch queue.` : "No website orders yet.");
+    } catch (e) {
+      setSyncMsg(`Sync failed: ${e instanceof Error ? e.message : String(e)}`);
+    } finally {
+      setSyncing(false);
+    }
+  }
+
   async function openDraft(order: Order, risk: RtoAssessment) {
     setDraft({ order, risk, message: "", loading: true });
     try {
@@ -96,6 +126,11 @@ export default function OrdersPage() {
               className="hidden"
               onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])}
             />
+            {published.length > 0 && (
+              <Button variant="secondary" loading={syncing} onClick={syncWebsiteOrders}>
+                <RefreshCw className="h-4 w-4" /> Sync website orders
+              </Button>
+            )}
             <Button variant="secondary" onClick={() => fileRef.current?.click()}>
               <Upload className="h-4 w-4" /> Import Shopify CSV
             </Button>
@@ -103,6 +138,8 @@ export default function OrdersPage() {
           </>
         }
       />
+
+      {syncMsg && <p className="-mt-3 mb-4 text-sm text-zinc-600">{syncMsg}</p>}
 
       {ws.orders.length === 0 ? (
         <Empty>
@@ -179,8 +216,13 @@ export default function OrdersPage() {
                           </td>
                           <td className="py-3 font-mono text-xs">
                             {order.id}
-                            <div className="mt-1">
+                            <div className="mt-1 flex flex-wrap gap-1">
                               <Badge tone={order.payment === "COD" ? "amber" : "green"}>{order.payment}</Badge>
+                              {order.source === "website" && (
+                                <Badge tone="blue">
+                                  <Globe className="h-3 w-3" /> Site
+                                </Badge>
+                              )}
                             </div>
                           </td>
                           <td className="py-3">
