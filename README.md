@@ -118,7 +118,7 @@ See [RULES.md](RULES.md) for the full list.
 
 ## Your project
 
-### DropOS: an MCP server that runs a student dropshipping business from inside Claude
+### DropOS: everything a student dropshipping team needs, end to end, inside Claude
 
 - **Team:** Cuck Coderz (Arnav Sharma, Aarush Goel, Sshaurya Aggarwal)
 - **Track:** 03 · Build in Your Area of Expertise (`area-of-expertise`)
@@ -141,6 +141,12 @@ They already use Claude every day, but a general chatbot can't do this job alone
 - **Shared, persistent team state** on our server. Every teammate's Claude reads and writes the same products, suppliers, quotes, creatives, ad sets, orders and shipments, and every change is attributed to the person who made it (`team_activity`: "what did Aarush do today?").
 - **Computed, not guessed, India dropshipping math.** RTO-adjusted unit economics per order *placed*, break-even CPA, the max COD RTO a product survives, and break-even ROAS.
 - **Domain engines.** A Hinglish supplier-quote parser and quote ranking, KILL / WAIT / KEEP / SCALE ad decisions against break-even CPA, and an explainable per-order RTO risk score with the operator action (ship, confirm + prepaid offer, call + ₹99 advance, hold).
+- **Connectors to the tools dropshippers actually use**, linked per team just by telling Claude (for example "connect my Shiprocket"): **Meta Marketing API**, **WhatsApp Business (Cloud API)**, **Shiprocket**, **Delhivery** and **Resend** email. There's no Shopify: DropOS publishes the store itself.
+- **End to end, from sourcing to delivery.**
+  - **Sourcing:** IndiaMART, TradeIndia and Alibaba sourcing playbooks for each product. Claude uses its own web search and logs real suppliers.
+  - **Supplier outreach:** batch outreach campaigns to suppliers.
+  - **Meta ads:** campaigns, ad sets and ads are created in the team's ad account through the Meta Marketing API, always **paused until the team confirms**. Results are pulled back for kill/scale decisions, and those decisions can be applied (pause losers, +20% budget for winners).
+  - **Outbound campaigns** over WhatsApp and email to past customers and leads. These are consent-first: only opted-in contacts get messages, and opt-outs are honoured.
 - **Real-world actions.**
   - Publishing a live store page with Cash-on-Delivery checkout at `/s/<store>`. Claude writes the copy; DropOS refuses invented reviews, ratings, sales counts or scarcity.
   - Syncing the orders it receives, and importing Shopify order CSVs.
@@ -175,7 +181,7 @@ We expose it at https://hack.icedoutai.com through a Cloudflare Tunnel. Runtime 
 
 #### Demo
 
-1. Open https://hack.icedoutai.com, create a team, and copy a member's connector URL.
+1. Open https://hack.icedoutai.com and click **Get started**. The onboarding wizard asks one thing at a time: team, store, teammates' phone numbers, then the 5-10 products, showing the real profit per order live. It ends with each member's personal connector link and a live "Claude connected ✓" indicator.
 2. In Claude, go to **Settings → Connectors → Add custom connector** and paste the URL.
 3. Talk to Claude:
    - "Here are our 6 product ideas…": it runs `add_products` and `analyze_products`. You see naive margin vs real profit per order, and which products to drop.
@@ -183,6 +189,8 @@ We expose it at https://hack.icedoutai.com through a Cloudflare Tunnel. Runtime 
    - "Write and publish our store page in Hinglish": `publish_store_page` returns a live URL. Place a COD order on it.
    - "Sync orders and tell me what not to ship": `sync_website_orders` / `import_orders` → `rto_check`.
    - "Ship the safe ones and notify customers": `create_shipment` → `track_shipments`, with a customer tracking link.
+   - "Launch our Meta test campaign for the posture belt": `meta_launch_campaign` creates it paused → after the team confirms, `meta_sync_results` → `meta_apply_decisions`.
+   - "Message our opted-in customers about the Diwali offer": `create_outbound_campaign` → `send_outbound_campaign`.
    - "What did my teammates do today?": `team_activity`.
 
-**Limits:** courier, WhatsApp and Resend calls are implemented but were only tested against their auth errors, since we had no live credentials during the event. Until a team connects them, messages are queued with one-click send links. Meta Ads numbers are logged through Claude rather than pulled from the Marketing API.
+**Limits:** Meta Marketing API, courier, WhatsApp and Resend calls are implemented but were only tested against their auth errors (Meta and Shiprocket credentials are checked when connecting), since we had no live credentials during the event. Until a team connects them, messages are queued with one-click send links. Meta Ads numbers are logged through Claude rather than pulled from the Marketing API.
