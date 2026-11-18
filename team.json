@@ -1,9 +1,9 @@
 {
-  "team_name": "CHANGE_ME",
-  "project_title": "CHANGE_ME",
-  "one_liner": "CHANGE_ME: one sentence about what you're building",
-  "track": "CHANGE_ME: physical-world | ai-agents | area-of-expertise",
+  "team_name": "Cuck Coderz",
+  "project_title": "DropOS: AI co-pilot for the MU Dropship Challenge",
+  "one_liner": "A CRM that takes first-time student dropshippers from product idea to IndiaMART supplier quotes, ad creatives, Meta ad decisions and RTO-safe COD orders, with AI doing the grunt work at every step.",
+  "track": "area-of-expertise",
   "members": [
-    { "name": "CHANGE_ME", "github": "CHANGE_ME" }
+    { "name": "Arnav Sharma", "github": "arnavsharma30" }
   ]
 }
