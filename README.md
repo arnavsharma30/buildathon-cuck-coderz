@@ -133,6 +133,7 @@ Claude does the thinking and writing. DropOS supplies what Claude can't do alone
 | **Team** | Cuck Coderz: Arnav Sharma ([@arnavsharma30](https://github.com/arnavsharma30)), Aarush Goel ([@aarush1503](https://github.com/aarush1503)), Sshaurya Aggarwal ([@Sshaurya-code](https://github.com/Sshaurya-code)) |
 | **Track** | 03 · Build in Your Area of Expertise (`area-of-expertise`). We are Masters' Union students; the Dropship Challenge is our own programme. |
 | **Live** | https://hack.icedoutai.com: landing page and `/start` onboarding |
+| **Demo video** | [`docs/dropos-demo.webm`](docs/dropos-demo.webm): about 1 minute of real MCP tool calls on the live server. It shows product economics, Hinglish quote parsing, publishing a COD store page, the RTO check, shipping with a tracking link, the live store and the customer tracking page. |
 | **Verified in real Claude** | A teammate added DropOS as a custom connector in claude.ai. Claude loaded the tools and ran `analyze_products` → `get_team_overview` → `add_products` on the team's real product list; server logs show `initialize` (protocol 2025-11-25), `tools/list` and the three `tools/call`s. |
 | **Stack** | Next.js 16 (App Router) · TypeScript · zod v4 · MCP over Streamable HTTP (hand-written, stateless JSON-RPC) · shadcn/ui charts (Recharts) · Tailwind v4 · file-backed storage · Cloudflare Tunnel |
 | **Size** | 42 MCP tools · ~8,000 lines of TypeScript written during the event · 55+ commits |
