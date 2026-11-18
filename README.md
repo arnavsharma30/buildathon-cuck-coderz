@@ -177,7 +177,7 @@ Almost nobody on these teams has done it before.
 - **Web surfaces, kept minimal:**
   - a landing page;
   - a one-question-at-a-time **onboarding wizard** that hands out connector links, shows live when each teammate's Claude connects, and suggests first messages built around the team's own products;
-  - a read-only **analytics dashboard** (shadcn charts);
+  - an **analytics dashboard** (shadcn charts) with a **Suppliers & outreach** list: every supplier Claude logged, by stage, with its IndiaMART listing and one-tap **Send on WhatsApp** / **Copy message** for each drafted message;
   - the customer-facing **store pages** and **tracking pages**.
 
 ### How a team starts (2 minutes)
