@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Plus, Sparkles, Star } from "lucide-react";
+import { Check, Pencil, Plus, Sparkles, Star, Trash2 } from "lucide-react";
 import { Badge, Button, Card, Empty, Field, PageHeader, ScoreBar, SourceBadge, cx, inputCls } from "@/components/ui";
 import { EconomicsPanel } from "@/components/EconomicsPanel";
+import { BLANK_PRODUCT, ProductForm, type ProductDraft } from "@/components/ProductForm";
 import { newId, postJSON, useWorkspace } from "@/lib/store";
 import { inr, unitEconomics } from "@/lib/economics";
 import { compositeScore, type ProductIdea } from "@/lib/products-demo";
@@ -22,6 +23,10 @@ function makeProduct(idea: ProductIdea): Product {
   return { ...idea, id: newId("prd"), status: "shortlisted", createdAt: Date.now() };
 }
 
+function productFromDraft(d: ProductDraft): Product {
+  return { ...d, id: newId("prd"), createdAt: Date.now() };
+}
+
 interface ResearchResponse {
   products: ProductIdea[];
   source: "claude" | "demo";
@@ -37,6 +42,7 @@ export default function ProductsPage() {
   const [ideas, setIdeas] = useState<ProductIdea[]>([]);
   const [source, setSource] = useState<"claude" | "demo">();
   const [error, setError] = useState<string>();
+  const [editing, setEditing] = useState<{ mode: "add" } | { mode: "edit"; product: Product } | null>(null);
 
   async function research() {
     setLoading(true);
@@ -66,6 +72,25 @@ export default function ProductsPage() {
     update((w) => ({ ...w, products: w.products.map((p) => (p.id === id ? { ...p, ...patch } : p)) }));
   }
 
+  function saveDraft(d: ProductDraft) {
+    if (editing?.mode === "edit") {
+      patchProduct(editing.product.id, d);
+    } else {
+      const product = productFromDraft(d);
+      update((w) => ({ ...w, products: [product, ...w.products], activeProductId: product.id }));
+    }
+    setEditing(null);
+  }
+
+  function removeProduct(p: Product) {
+    if (!confirm(`Delete ${p.name}? Its suppliers, creatives, ad sets and website stay in the workspace but lose their product.`)) return;
+    update((w) => ({
+      ...w,
+      products: w.products.filter((x) => x.id !== p.id),
+      activeProductId: w.activeProductId === p.id ? undefined : w.activeProductId,
+    }));
+  }
+
   function patchSettings(patch: Partial<EconomicsSettings>) {
     update((w) => ({ ...w, economics: { ...w.economics, ...patch } }));
   }
@@ -76,7 +101,23 @@ export default function ProductsPage() {
         step="Step 1"
         title="Product research"
         subtitle="Find products that survive Indian COD reality: light, Reel-demonstrable, 3x+ markup and low RTO risk. Then check what you'd actually make per order before spending a rupee on ads."
+        actions={
+          <Button onClick={() => setEditing({ mode: "add" })}>
+            <Plus className="h-4 w-4" /> Add product
+          </Button>
+        }
       />
+
+      {editing && (
+        <ProductForm
+          key={editing.mode === "edit" ? editing.product.id : "new"}
+          mode={editing.mode}
+          initial={editing.mode === "edit" ? editing.product : BLANK_PRODUCT}
+          settings={ws.economics}
+          onSave={saveDraft}
+          onClose={() => setEditing(null)}
+        />
+      )}
 
       <Card title="What should your team sell?" right={<SourceBadge source={source} />}>
         <form
@@ -147,9 +188,16 @@ export default function ProductsPage() {
         )}
       </section>
 
-      <Card title={`Your product pipeline (${ws.products.length})`}>
+      <Card
+        title={`Your product catalogue (${ws.products.length})`}
+        right={
+          <Button variant="secondary" className="px-2.5 py-1.5 text-xs" onClick={() => setEditing({ mode: "add" })}>
+            <Plus className="h-3.5 w-3.5" /> Add product
+          </Button>
+        }
+      >
         {ws.products.length === 0 ? (
-          <p className="text-sm text-zinc-500">Nothing here yet.</p>
+          <p className="text-sm text-zinc-500">Nothing here yet. Add a product you already have in mind, or shortlist one from research.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -170,8 +218,24 @@ export default function ProductsPage() {
                   return (
                     <tr key={p.id} className={cx("border-b border-zinc-100 last:border-0", isActive && "bg-emerald-50/50")}>
                       <td className="py-2.5 pr-3">
-                        <div className="font-medium text-zinc-900">{p.name}</div>
-                        <div className="text-xs text-zinc-500">{p.category}</div>
+                        <div className="flex items-center gap-3">
+                          {p.images?.[0] ? (
+                            // eslint-disable-next-line @next/next/no-img-element -- arbitrary user-supplied URLs
+                            <img src={p.images[0]} alt="" className="h-10 w-10 shrink-0 rounded-md bg-zinc-100 object-cover" />
+                          ) : (
+                            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-zinc-100 text-sm font-semibold text-zinc-400">
+                              {p.name.slice(0, 1)}
+                            </div>
+                          )}
+                          <div>
+                            <div className="font-medium text-zinc-900">{p.name}</div>
+                            <div className="text-xs text-zinc-500">
+                              {p.category}
+                              {p.variants?.length ? ` · ${p.variants.length} variants` : ""}
+                              {p.sku ? ` · ${p.sku}` : ""}
+                            </div>
+                          </div>
+                        </div>
                       </td>
                       <td className="py-2.5 pr-3 tabular-nums">{compositeScore(p.scores)}</td>
                       <td className="py-2.5 pr-3 tabular-nums text-zinc-700">
@@ -194,7 +258,13 @@ export default function ProductsPage() {
                         </select>{" "}
                         <Badge tone={STATUS_TONE[p.status]}>{p.status}</Badge>
                       </td>
-                      <td className="py-2.5 text-right">
+                      <td className="whitespace-nowrap py-2.5 text-right">
+                        <Button variant="ghost" className="px-2 py-1 text-xs" onClick={() => setEditing({ mode: "edit", product: p })} title="Edit">
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button variant="ghost" className="px-2 py-1 text-xs text-red-600" onClick={() => removeProduct(p)} title="Delete">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
                         {isActive ? (
                           <Badge tone="green">
                             <Star className="h-3 w-3" /> Active
