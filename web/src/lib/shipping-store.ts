@@ -6,6 +6,13 @@ import type { Shipment } from "./couriers";
 const ROOT = path.join(process.cwd(), "data");
 const SHIPMENTS = path.join(ROOT, "shipments");
 const INTEGRATIONS = path.join(ROOT, "integrations.json");
+// Per-team credentials (MCP mode). The global file above is the legacy single-tenant fallback.
+const TEAM_INTEGRATIONS = path.join(ROOT, "integrations");
+const integrationsFile = (teamId?: string) =>
+  teamId ? path.join(TEAM_INTEGRATIONS, `${teamId.replace(/[^a-z0-9_-]/gi, "")}.json`) : INTEGRATIONS;
+
+/** A shipment tagged with the team that created it (older shipments may have no teamId). */
+export type TeamShipment = Shipment & { teamId?: string };
 
 export const SHIPMENT_ID_RE = /^[a-z0-9]{6,20}$/;
 
@@ -33,6 +40,10 @@ export async function getShipment(id: string): Promise<Shipment | null> {
   } catch {
     return null;
   }
+}
+
+export async function listShipmentsForTeam(teamId: string): Promise<TeamShipment[]> {
+  return ((await listShipments()) as TeamShipment[]).filter((s) => s.teamId === teamId);
 }
 
 export async function listShipments(): Promise<Shipment[]> {
@@ -65,17 +76,18 @@ export async function withShipment<T>(id: string, fn: (s: Shipment) => Promise<T
 
 // ---------- integrations ----------
 
-export async function getIntegrations(): Promise<Integrations> {
+export async function getIntegrations(teamId?: string): Promise<Integrations> {
   try {
-    return JSON.parse(await fs.readFile(INTEGRATIONS, "utf8")) as Integrations;
+    return JSON.parse(await fs.readFile(integrationsFile(teamId), "utf8")) as Integrations;
   } catch {
     return {};
   }
 }
 
-export async function saveIntegrations(i: Integrations) {
-  await fs.mkdir(ROOT, { recursive: true });
-  await fs.writeFile(INTEGRATIONS, JSON.stringify(i, null, 2), { mode: 0o600 });
+export async function saveIntegrations(i: Integrations, teamId?: string) {
+  const file = integrationsFile(teamId);
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  await fs.writeFile(file, JSON.stringify(i, null, 2), { mode: 0o600 });
 }
 
 const mask = (v?: string) => (v ? `••••${v.slice(-4)}` : undefined);
