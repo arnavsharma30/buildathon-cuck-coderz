@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { ArrowRight, CheckCircle2, Circle, Factory, Megaphone, PackageCheck, Palette, Search, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle, Factory, Globe, Megaphone, PackageCheck, Palette, Search, Sparkles } from "lucide-react";
 import { useWorkspace } from "@/lib/store";
 import { unitEconomics, inr, pct } from "@/lib/economics";
 import { assessOrder, portfolioImpact } from "@/lib/rto";
@@ -16,6 +16,8 @@ export default function CommandCenter() {
   const sup = ws.suppliers.filter((s) => s.productId === pid);
   const creatives = ws.creatives.filter((c) => c.productId === pid);
   const adsets = ws.adsets.filter((a) => a.productId === pid);
+  const site = ws.websites.find((w) => w.productId === pid);
+  const siteOrders = ws.orders.filter((o) => o.source === "website").length;
   const econ = activeProduct
     ? unitEconomics({ sellingPrice: activeProduct.sellingPrice, productCost: activeProduct.sourcingCost, shippingFwd: activeProduct.shippingCost }, ws.economics)
     : null;
@@ -52,6 +54,14 @@ export default function CommandCenter() {
       detail: finalized ? `Finalized: ${finalized.name}` : "Get dropship + COD + blind-shipping quotes",
     },
     {
+      href: "/website",
+      icon: Globe,
+      title: "Website",
+      done: Boolean(site?.publishedAt),
+      metric: site?.publishedAt ? `Live at /s/${site.slug}` : site ? "Draft saved" : "No store page yet",
+      detail: site?.publishedAt ? `${siteOrders} website orders synced` : "AI-built store page with COD checkout",
+    },
+    {
       href: "/creatives",
       icon: Palette,
       title: "Ad creatives",
@@ -86,6 +96,7 @@ export default function CommandCenter() {
     finalized: !!finalized,
     creatives: creatives.length,
     adsets: adsets.length,
+    sitePublished: Boolean(site?.publishedAt),
     cpaOver: econ && purchases ? cpa > econ.profitBeforeAds : false,
     risky: orderStats.risky,
   });
@@ -112,7 +123,7 @@ export default function CommandCenter() {
         <input className={cx(inputCls, "max-w-xs py-1.5")} value={ws.teamName} onChange={(e) => update((w) => ({ ...w, teamName: e.target.value }))} />
       </div>
 
-      <div className="grid gap-3 md:grid-cols-5">
+      <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
         {steps.map((s, i) => {
           const Icon = s.icon;
           return (
@@ -187,6 +198,7 @@ function buildNextActions(s: {
   finalized: boolean;
   creatives: number;
   adsets: number;
+  sitePublished: boolean;
   cpaOver: boolean;
   risky: number;
 }): { tag: string; tone: Tone; text: string; href: string }[] {
@@ -201,6 +213,7 @@ function buildNextActions(s: {
   if (s.suppliers === 0) out.push({ tag: "Source", tone: "blue", text: "Search IndiaMART for suppliers of your active product.", href: "/suppliers" });
   else if (s.contacted < 3) out.push({ tag: "Source", tone: "blue", text: `Message at least 3 suppliers (you've contacted ${s.contacted}). Ask for dropship, COD and blind shipping.`, href: "/suppliers" });
   else if (!s.finalized) out.push({ tag: "Source", tone: "amber", text: `${s.quoted} quotes in. Compare landed cost and finalize the best one.`, href: "/suppliers" });
+  if (!s.sitePublished) out.push({ tag: "Store", tone: "violet", text: "Generate and publish your store page so ads have somewhere to send people.", href: "/website" });
   if (s.creatives < 3) out.push({ tag: "Create", tone: "violet", text: `Make at least 3 creative angles to test (you have ${s.creatives}).`, href: "/creatives" });
   if (s.adsets === 0) out.push({ tag: "Ads", tone: "blue", text: "Generate a Meta testing campaign: 3 ABO ad sets × your best angles.", href: "/ads" });
   if (!out.length) out.push({ tag: "On track", tone: "green", text: "Everything is moving. Scale winning ad sets by 20%/day and keep confirming COD orders.", href: "/ads" });
